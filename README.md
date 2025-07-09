@@ -1,4 +1,3 @@
-
 # 🚀 Previdas Automation Engine
 
 **Sistema de Automação Inteligente para Qualificação de Leads e Gestão de Funil de Vendas com IA**
