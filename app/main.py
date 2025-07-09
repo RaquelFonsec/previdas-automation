@@ -1,4 +1,3 @@
-# app/main.py - Atualizado com Frontend
 from fastapi import FastAPI, HTTPException, BackgroundTasks, Request, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -6,7 +5,6 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from typing import Optional, Dict, List
-import openai
 import requests
 import json
 import asyncio
@@ -14,6 +12,10 @@ from datetime import datetime, timedelta
 import sqlite3
 import pandas as pd
 from enum import Enum
+
+# IMPORTS PARA .ENV 
+import os
+from dotenv import load_dotenv
 
 app = FastAPI(title="Previdas Automation Engine", version="1.0.0")
 
@@ -31,14 +33,29 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 # ==================== CONFIGURAÇÕES ====================
-OPENAI_API_KEY = "chave_openai"
-openai.api_key = OPENAI_API_KEY
+# Carregar variáveis do arquivo .env
+load_dotenv()
+
+# Buscar chave do ambiente (nunca hardcoded)
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+# Configurar cliente OpenAI de forma segura
+if OPENAI_API_KEY and OPENAI_API_KEY.startswith("sk-"):
+    try:
+        from openai import AsyncOpenAI
+        openai_client = AsyncOpenAI(api_key=OPENAI_API_KEY)
+        print(f"✅ OpenAI configurada com chave: {OPENAI_API_KEY[:15]}...")
+    except ImportError:
+        openai_client = None
+        print("⚠️ OpenAI não instalada - usando fallback")
+else:
+    openai_client = None
+    print("⚠️ OpenAI não configurada - usando fallback")
 
 # URLs dos sistemas exemplos
 CRM_API_URL = "https://api.seu-crm.com"
 WHATSAPP_API_URL = "https://api.whatsapp.business"
 EMAIL_API_URL = "https://api.activecampaign.com"
-
 # ==================== MODELOS PYDANTIC ====================
 class LeadStatus(str, Enum):
     HOT = "hot"
@@ -120,41 +137,68 @@ class AIService:
         """Analisa mensagem usando GPT para classificar intenção e urgência"""
         
         prompt = f"""
-        Você é um especialista em qualificação de leads para uma empresa de seguros.
+        Você é especialista em qualificação de leads para Previdas (laudos médicos para advogados).
         
-        Analise esta mensagem e retorne um JSON com:
-        - intent: "interest", "price_inquiry", "objection", "support", "casual"
+        Analise esta mensagem e retorne JSON com:
+        - intent: "lawyer", "urgent_case", "volume_inquiry", "price_inquiry", "casual"  
         - urgency: "high", "medium", "low"
-        - score: número de 0-100 (quanto maior, mais qualificado)
-        - next_action: "transfer_sales", "nurture", "collect_info", "schedule_call"
+        - score: 0-100 (advogado=70+, especialista=80+, urgente=90+)
+        - next_action: "transfer_sales", "nurture", "collect_info"
         - sentiment: "positive", "neutral", "negative"
-        
-        Contexto do lead: {context or "Novo lead"}
         
         Mensagem: "{message}"
         
-        Responda APENAS com JSON válido:
+        Responda APENAS JSON válido:
         """
         
         try:
-            response = await openai.ChatCompletion.acreate(
-                model="gpt-4",
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.3,
-                max_tokens=200
-            )
-            
-            result = json.loads(response.choices[0].message.content)
-            return result
+            if openai_client:
+                print(f"🤖 Analisando: {message[:30]}...")
+                
+                response = await openai_client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=0.3,
+                    max_tokens=200
+                )
+                
+                result = json.loads(response.choices[0].message.content)
+                print(f"✅ OpenAI: {result}")
+                return result
+            else:
+                raise Exception("OpenAI não configurada")
+                
         except Exception as e:
-            # Fallback simples
-            return {
-                "intent": "interest",
-                "urgency": "medium", 
-                "score": 50,
-                "next_action": "collect_info",
-                "sentiment": "neutral"
+            print(f"❌ Erro: {e}")
+            
+            # Fallback melhorado para Previdas
+            message_lower = message.lower()
+            score = 30
+            
+            # Palavras-chave que aumentam score
+            if "advogado" in message_lower: score += 40
+            if "especialista" in message_lower: score += 30  
+            if "urgente" in message_lower or "hoje" in message_lower: score += 30
+            if "previdenciário" in message_lower or "trabalhista" in message_lower: score += 20
+            if "bpc" in message_lower: score += 25
+            if "laudo" in message_lower or "perícia" in message_lower: score += 20
+            if "anos" in message_lower and ("15" in message_lower or "10" in message_lower): score += 15
+            if "casos" in message_lower and "mês" in message_lower: score += 25
+            if "escritório" in message_lower: score += 20
+            
+            # Determinar urgência
+            urgency = "high" if any(word in message_lower for word in ["urgente", "hoje", "amanhã", "audiência"]) else "medium"
+            
+            result = {
+                "intent": "lawyer" if "advogado" in message_lower else "interest",
+                "urgency": urgency,
+                "score": min(100, score),
+                "next_action": "transfer_sales" if score > 80 else "collect_info", 
+                "sentiment": "positive"
             }
+            
+            print(f"🔄 Fallback: {result}")
+            return result
 
     @staticmethod
     async def generate_response(message: str, lead_data: Dict, conversation_history: List) -> str:
@@ -166,7 +210,7 @@ class AIService:
         ])
         
         prompt = f"""
-        Você é um consultor especialista em seguros da Previdas.
+        Você é um consultor especialista da Previdas (laudos médicos para advogados).
         
         Perfil do cliente:
         - Nome: {lead_data.get('name', 'Cliente')}
@@ -180,7 +224,7 @@ class AIService:
         
         Gere uma resposta que seja:
         1. Empática e personalizada
-        2. Focada em entender a necessidade
+        2. Focada em laudos médicos para processos jurídicos
         3. Direcionada para qualificar o lead
         4. Máximo 150 caracteres para WhatsApp
         
@@ -188,16 +232,34 @@ class AIService:
         """
         
         try:
-            response = await openai.ChatCompletion.acreate(
-                model="gpt-4",
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.7,
-                max_tokens=100
-            )
-            
-            return response.choices[0].message.content.strip()
+            if openai_client:
+                response = await openai_client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=0.7,
+                    max_tokens=100
+                )
+                
+                return response.choices[0].message.content.strip()
+            else:
+                raise Exception("OpenAI não configurada")
+                
         except Exception as e:
-            return "Obrigado pelo contato! Em que posso ajudá-lo com seguros hoje?"
+            # Fallback personalizado para Previdas
+            message_lower = message.lower()
+            
+            if "advogado" in message_lower and "especialista" in message_lower:
+                return "Perfeito! Somos especialistas em laudos médicos para advogados. Qual área do direito você atua?"
+            elif "advogado" in message_lower:
+                return "Olá! Somos especialistas em laudos médicos para processos jurídicos. Em qual área você atua?"
+            elif "urgente" in message_lower:
+                return "Entendo a urgência! Nossos laudos são emitidos em 24h. Qual o tipo de processo?"
+            elif "bpc" in message_lower or "previdenciário" in message_lower:
+                return "Especialistas em laudos para BPC e previdenciário! Quantos casos você tem por mês?"
+            elif "laudo" in message_lower:
+                return "Sim, fazemos laudos médicos especializados! Para que tipo de processo precisa?"
+            else:
+                return "Olá! Somos a Previdas, especialistas em laudos médicos para advogados. Como posso ajudar?"
 
 # ==================== INTEGRAÇÕES ====================
 class IntegrationService:
@@ -277,11 +339,12 @@ class IntegrationService:
         """Notifica equipe de vendas sobre lead quente"""
         try:
             message = f"""
-            🔥 LEAD QUENTE!
+            🔥 LEAD QUENTE PREVIDAS!
             Nome: {lead_data.get('name', 'N/A')}
             Phone: {lead_data['phone']}
-            Score: {lead_data['score']}
-            Última mensagem: {lead_data.get('last_message', 'N/A')}
+            Score: {lead_data['score']}/100
+            Status: Advogado qualificado para laudos médicos
+            Ação: Contatar imediatamente!
             """
             
             print(f"Notificação vendas: {message}")
@@ -314,7 +377,7 @@ class AutomationEngine:
         await IntegrationService.send_to_crm(data)
         
         # 2. Envia mensagem de boas-vindas
-        welcome_msg = f"Olá! Sou da Previdas Seguros. Vi que você tem interesse. Como posso ajudar?"
+        welcome_msg = f"Olá! Sou da Previdas, especialistas em laudos médicos para advogados. Como posso ajudar?"
         await IntegrationService.send_whatsapp(data["phone"], welcome_msg)
         
         # 3. Log da automação
@@ -322,7 +385,7 @@ class AutomationEngine:
 
     @staticmethod
     async def _handle_message(data: Dict):
-        """Automação para nova mensagem"""
+        """Automação para nova mensagem - VERSÃO MELHORADA"""
         
         # 1. Busca dados do lead
         lead_data = AutomationEngine._get_lead_data(data["phone"])
@@ -330,8 +393,25 @@ class AutomationEngine:
         # 2. Analisa mensagem com IA
         analysis = await AIService.analyze_message(data["message"], lead_data)
         
-        # 3. Atualiza score do lead
-        new_score = min(100, lead_data.get("score", 0) + analysis["score"] // 10)
+        # 3. Atualiza score do lead - CÁLCULO INTELIGENTE
+        current_score = lead_data.get("score", 0)
+        ai_score = analysis["score"]
+        
+        # Cálculo inteligente baseado no score da IA
+        if ai_score >= 90:
+            score_increment = 30  # Lead muito quente (urgente + especialista)
+        elif ai_score >= 80:
+            score_increment = 25  # Lead quente (advogado especialista)
+        elif ai_score >= 70:
+            score_increment = 20  # Lead bom (advogado)
+        elif ai_score >= 50:
+            score_increment = 15  # Lead morno (interesse)
+        else:
+            score_increment = 10  # Lead frio
+            
+        new_score = min(100, current_score + score_increment)
+        
+        print(f"📊 Score: {current_score} + {score_increment} = {new_score} (IA: {ai_score})")
         lead_data.update({"score": new_score})
         
         # 4. Executa ação baseada na análise
@@ -339,12 +419,15 @@ class AutomationEngine:
             # Lead quente - notifica vendas
             await IntegrationService.notify_sales_team(lead_data)
             lead_data["status"] = "qualified"
+            AutomationEngine._log_automation("message_received", data["phone"], "sales_notified", "success")
+            print(f"🔥 Lead qualificado! Score: {new_score}")
             
         elif analysis["next_action"] == "nurture":
             # Lead morno - sequência de nutrição
             email = lead_data.get("email")
             if email:
                 await IntegrationService.trigger_email_sequence(email, "nurture")
+            AutomationEngine._log_automation("message_received", data["phone"], "nurture_triggered", "success")
             
         # 5. Gera e envia resposta do bot
         conversation_history = AutomationEngine._get_conversation_history(data["phone"])
@@ -360,34 +443,44 @@ class AutomationEngine:
         await IntegrationService.send_to_crm(lead_data)
 
     @staticmethod
+    async def _handle_status_change(data: Dict):
+        """Automação para mudança de status"""
+        print(f"Status changed: {data}")
+
+    @staticmethod
     def _get_lead_data(phone: str) -> Dict:
         """Busca dados do lead no banco"""
+        # LIMPAR TELEFONE
+        clean_phone = phone.strip().replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
+        
         conn = sqlite3.connect('previdas.db')
         cursor = conn.cursor()
         
-        cursor.execute('SELECT * FROM leads WHERE phone = ?', (phone,))
+        cursor.execute('SELECT * FROM leads WHERE phone = ?', (clean_phone,))
         row = cursor.fetchone()
         conn.close()
         
         if row:
             return {
                 "phone": row[1],
-                "name": row[2],
+                "name": row[2], 
                 "status": row[3],
                 "score": row[4],
                 "source": row[5]
             }
-        return {"phone": phone, "score": 0, "status": "new"}
+        return {"phone": clean_phone, "score": 0, "status": "new"}
 
     @staticmethod
     def _get_conversation_history(phone: str) -> List[Dict]:
         """Busca histórico de conversa"""
+        clean_phone = phone.strip().replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
+        
         conn = sqlite3.connect('previdas.db')
         cursor = conn.cursor()
         
         cursor.execute(
             'SELECT message, is_bot FROM conversations WHERE phone = ? ORDER BY timestamp DESC LIMIT 10',
-            (phone,)
+            (clean_phone,)
         )
         rows = cursor.fetchall()
         conn.close()
@@ -397,12 +490,14 @@ class AutomationEngine:
     @staticmethod
     def _save_conversation(phone: str, message: str, is_bot: bool):
         """Salva mensagem da conversa"""
+        clean_phone = phone.strip().replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
+        
         conn = sqlite3.connect('previdas.db')
         cursor = conn.cursor()
         
         cursor.execute(
             'INSERT INTO conversations (phone, message, is_bot) VALUES (?, ?, ?)',
-            (phone, message, is_bot)
+            (clean_phone, message, is_bot)
         )
         conn.commit()
         conn.close()
@@ -410,12 +505,14 @@ class AutomationEngine:
     @staticmethod
     def _log_automation(trigger_type: str, phone: str, action: str, result: str):
         """Log das automações executadas"""
+        clean_phone = phone.strip().replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
+        
         conn = sqlite3.connect('previdas.db')
         cursor = conn.cursor()
         
         cursor.execute(
             'INSERT INTO automation_logs (trigger_type, phone, action_taken, result) VALUES (?, ?, ?, ?)',
-            (trigger_type, phone, action, result)
+            (trigger_type, clean_phone, action, result)
         )
         conn.commit()
         conn.close()
