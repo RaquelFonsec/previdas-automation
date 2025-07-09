@@ -56,6 +56,32 @@ O Previdas Automation Engine é uma "máquina de receita" inteligente que proces
                        └──────────────┘
 ```
 
+
+
+
+
+## 🏥 **Especialização Previdas - Laudos Médicos**
+
+### **🎯 Inteligência Específica para o Negócio:**
+- **Detecção de Advogados:** Identifica automaticamente profissionais jurídicos
+- **Áreas de Atuação:** Previdenciário, trabalhista, BPC, isenção IR
+- **Urgência Processual:** Detecta prazos (audiências, recursos, perícias)
+- **Volume de Casos:** Qualifica escritórios por quantidade mensal
+- **Tipos de Laudo:** Especialização em diferentes patologias e processos
+
+### **🧠 Palavras-Chave Inteligentes:**
+```python
+# Detecção automática de contexto jurídico-médico
+keywords = {
+    "profissão": ["advogado", "especialista", "escritório"],
+    "área_direito": ["previdenciário", "trabalhista", "cível"],
+    "processos": ["BPC", "isenção IR", "incapacidade", "perícia"],
+    "urgência": ["audiência", "recurso", "prazo", "urgente"],
+    "volume": ["casos/mês", "demanda", "carteira"]
+}
+
+
+
 ## 🚀 **Instalação e Configuração**
 
 ### **Pré-requisitos:**
