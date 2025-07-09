@@ -24,10 +24,10 @@ app.add_middleware(
 )
 
 # ==================== CONFIGURAÇÕES ====================
-OPENAI_API_KEY = "sua_chave_openai"
+OPENAI_API_KEY = "chave_openai"
 openai.api_key = OPENAI_API_KEY
 
-# URLs dos sistemas (substitua pelas reais)
+# URLs dos sistemas exemplos
 CRM_API_URL = "https://api.seu-crm.com"
 WHATSAPP_API_URL = "https://api.whatsapp.business"
 EMAIL_API_URL = "https://api.activecampaign.com"
