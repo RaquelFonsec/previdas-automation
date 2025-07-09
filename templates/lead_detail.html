@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Detalhes do Lead</title>
+    <style>body { font-family: Arial; padding: 20px; }</style>
+</head>
+<body>
+    <h1>Detalhes do Lead</h1>
+    <p>Nome: {{ lead.name or 'N/A' }}</p>
+    <p>Telefone: {{ lead.phone }}</p>
+    <p>Score: {{ lead.score }}/100</p>
+    <p>Status: {{ lead.status }}</p>
+    <a href="/leads">← Voltar para lista</a>
+</body>
+</html>

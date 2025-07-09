@@ -1,13 +1,16 @@
-# main.py
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+# app/main.py - Atualizado com Frontend
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Request, Form
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from typing import Optional, Dict, List
 import openai
 import requests
 import json
 import asyncio
-from datetime import datetime
+from datetime import datetime, timedelta
 import sqlite3
 import pandas as pd
 from enum import Enum
@@ -22,6 +25,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Configurar arquivos estáticos e templates
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
 # ==================== CONFIGURAÇÕES ====================
 OPENAI_API_KEY = "chave_openai"
@@ -209,9 +216,6 @@ class IntegrationService:
                 "source": lead_data.get("source", "whatsapp")
             }
             
-            # response = requests.post(f"{CRM_API_URL}/contacts", json=payload, headers=headers)
-            # return response.status_code == 200
-            
             # Para demonstração, salvamos no SQLite
             conn = sqlite3.connect('previdas.db')
             cursor = conn.cursor()
@@ -242,9 +246,6 @@ class IntegrationService:
                 "text": {"body": message}
             }
             
-            # response = requests.post(f"{WHATSAPP_API_URL}/messages", json=payload, headers=headers)
-            # return response.status_code == 200
-            
             # Para demonstração, apenas logamos
             print(f"WhatsApp para {phone}: {message}")
             return True
@@ -264,7 +265,6 @@ class IntegrationService:
                 "automation": sequence_type  # "nurture", "onboarding", etc.
             }
             
-            # response = requests.post(f"{EMAIL_API_URL}/automations", json=payload, headers=headers)
             print(f"Email {sequence_type} para {email}")
             return True
             
@@ -276,7 +276,6 @@ class IntegrationService:
     async def notify_sales_team(lead_data: Dict) -> bool:
         """Notifica equipe de vendas sobre lead quente"""
         try:
-            # Integração com Slack, Teams, etc.
             message = f"""
             🔥 LEAD QUENTE!
             Nome: {lead_data.get('name', 'N/A')}
@@ -285,7 +284,6 @@ class IntegrationService:
             Última mensagem: {lead_data.get('last_message', 'N/A')}
             """
             
-            # Aqui você integraria com Slack, Teams, etc.
             print(f"Notificação vendas: {message}")
             return True
             
@@ -422,7 +420,172 @@ class AutomationEngine:
         conn.commit()
         conn.close()
 
-# ==================== ENDPOINTS DA API ====================
+# ==================== FRONTEND ROUTES ====================
+
+@app.get("/", response_class=HTMLResponse)
+async def dashboard(request: Request):
+    """Dashboard principal"""
+    
+    # Buscar dados para o dashboard
+    conn = sqlite3.connect('previdas.db')
+    
+    # Métricas principais
+    total_leads = pd.read_sql_query("SELECT COUNT(*) as count FROM leads", conn).iloc[0]['count']
+    
+    hot_leads = pd.read_sql_query(
+        "SELECT COUNT(*) as count FROM leads WHERE score >= 80", conn
+    ).iloc[0]['count']
+    
+    # Leads por status
+    leads_by_status = pd.read_sql_query(
+        "SELECT status, COUNT(*) as count FROM leads GROUP BY status", conn
+    ).to_dict('records')
+    
+    # Conversões por dia (últimos 7 dias)
+    daily_data = pd.read_sql_query("""
+        SELECT DATE(created_at) as date, COUNT(*) as leads 
+        FROM leads 
+        WHERE created_at >= date('now', '-7 days')
+        GROUP BY DATE(created_at)
+        ORDER BY date
+    """, conn).to_dict('records')
+    
+    # Leads quentes recentes
+    hot_leads_list = pd.read_sql_query("""
+        SELECT phone, name, score, 
+               datetime(updated_at, 'localtime') as last_update
+        FROM leads 
+        WHERE score >= 80 
+        ORDER BY updated_at DESC 
+        LIMIT 5
+    """, conn).to_dict('records')
+    
+    # Atividades recentes
+    recent_activities = pd.read_sql_query("""
+        SELECT trigger_type, phone, action_taken, result,
+               datetime(timestamp, 'localtime') as time
+        FROM automation_logs 
+        ORDER BY timestamp DESC 
+        LIMIT 10
+    """, conn).to_dict('records')
+    
+    conn.close()
+    
+    # Calcular taxa de conversão
+    conversion_rate = (hot_leads / total_leads * 100) if total_leads > 0 else 0
+    
+    return templates.TemplateResponse("dashboard.html", {
+        "request": request,
+        "total_leads": total_leads,
+        "hot_leads": hot_leads,
+        "conversion_rate": round(conversion_rate, 1),
+        "leads_by_status": leads_by_status,
+        "daily_data": daily_data,
+        "hot_leads_list": hot_leads_list,
+        "recent_activities": recent_activities
+    })
+
+@app.get("/leads", response_class=HTMLResponse)
+async def leads_page(request: Request, status: str = None, search: str = None):
+    """Página de gestão de leads"""
+    
+    conn = sqlite3.connect('previdas.db')
+    
+    # Query base
+    query = """
+        SELECT phone, name, status, score, source,
+               datetime(created_at, 'localtime') as created_at,
+               datetime(updated_at, 'localtime') as updated_at
+        FROM leads 
+        WHERE 1=1
+    """
+    params = []
+    
+    # Filtros
+    if status:
+        query += " AND status = ?"
+        params.append(status)
+    
+    if search:
+        query += " AND (name LIKE ? OR phone LIKE ?)"
+        params.extend([f"%{search}%", f"%{search}%"])
+    
+    query += " ORDER BY updated_at DESC LIMIT 50"
+    
+    leads = pd.read_sql_query(query, conn, params=params).to_dict('records')
+    
+    # Status únicos para filtro
+    statuses = pd.read_sql_query(
+        "SELECT DISTINCT status FROM leads ORDER BY status", conn
+    )['status'].tolist()
+    
+    conn.close()
+    
+    return templates.TemplateResponse("leads.html", {
+        "request": request,
+        "leads": leads,
+        "statuses": statuses,
+        "current_status": status,
+        "current_search": search or ""
+    })
+
+@app.get("/lead/{phone}", response_class=HTMLResponse)
+async def lead_detail(request: Request, phone: str):
+    """Detalhes de um lead específico"""
+    
+    conn = sqlite3.connect('previdas.db')
+    
+    # Dados do lead
+    lead_data = pd.read_sql_query(
+        "SELECT * FROM leads WHERE phone = ?", conn, params=[phone]
+    ).to_dict('records')
+    
+    if not lead_data:
+        raise HTTPException(status_code=404, detail="Lead não encontrado")
+    
+    lead = lead_data[0]
+    
+    # Histórico de conversas
+    conversations = pd.read_sql_query("""
+        SELECT message, is_bot, datetime(timestamp, 'localtime') as timestamp
+        FROM conversations 
+        WHERE phone = ? 
+        ORDER BY timestamp ASC
+    """, conn, params=[phone]).to_dict('records')
+    
+    # Logs de automação
+    automation_logs = pd.read_sql_query("""
+        SELECT trigger_type, action_taken, result,
+               datetime(timestamp, 'localtime') as timestamp
+        FROM automation_logs 
+        WHERE phone = ? 
+        ORDER BY timestamp DESC
+    """, conn, params=[phone]).to_dict('records')
+    
+    conn.close()
+    
+    return templates.TemplateResponse("lead_detail.html", {
+        "request": request,
+        "lead": lead,
+        "conversations": conversations,
+        "automation_logs": automation_logs
+    })
+
+@app.post("/send-message")
+async def send_message_form(request: Request, phone: str = Form(...), message: str = Form(...)):
+    """Enviar mensagem via formulário"""
+    
+    # Simular envio de mensagem
+    trigger = AutomationTrigger(
+        trigger_type="message_received",
+        data={"phone": phone, "message": message}
+    )
+    
+    await AutomationEngine.process_automation(trigger)
+    
+    return {"status": "success", "message": "Mensagem processada"}
+
+# ==================== API ENDPOINTS (mantidos) ====================
 
 @app.on_event("startup")
 async def startup_event():
@@ -430,7 +593,7 @@ async def startup_event():
     init_db()
     print("🚀 Previdas Automation Engine iniciado!")
 
-@app.get("/")
+@app.get("/api/")
 async def root():
     return {"message": "Previdas Automation Engine - Sua máquina de receita inteligente!"}
 
@@ -459,7 +622,7 @@ async def whatsapp_webhook(data: Dict, background_tasks: BackgroundTasks):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/leads")
+@app.post("/api/leads")
 async def create_lead(lead: Lead, background_tasks: BackgroundTasks):
     """Cria novo lead e dispara automações"""
     
@@ -472,7 +635,7 @@ async def create_lead(lead: Lead, background_tasks: BackgroundTasks):
     
     return {"status": "success", "message": "Lead criado e automação iniciada"}
 
-@app.get("/leads/{phone}")
+@app.get("/api/leads/{phone}")
 async def get_lead(phone: str):
     """Busca dados de um lead específico"""
     lead_data = AutomationEngine._get_lead_data(phone)
@@ -482,7 +645,7 @@ async def get_lead(phone: str):
     
     return lead_data
 
-@app.get("/analytics/dashboard")
+@app.get("/api/analytics/dashboard")
 async def get_dashboard_data():
     """Dados para dashboard analytics"""
     
@@ -524,13 +687,13 @@ async def get_dashboard_data():
         "total_leads": sum(item['count'] for item in leads_by_status)
     }
 
-@app.get("/conversations/{phone}")
+@app.get("/api/conversations/{phone}")
 async def get_conversation(phone: str):
     """Busca histórico de conversa de um lead"""
     history = AutomationEngine._get_conversation_history(phone)
     return {"phone": phone, "conversation": history}
 
-@app.post("/trigger-automation")
+@app.post("/api/trigger-automation")
 async def manual_trigger(trigger: AutomationTrigger, background_tasks: BackgroundTasks):
     """Trigger manual de automação (para testes)"""
     

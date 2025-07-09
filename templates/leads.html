@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Leads - Previdas</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+        }
+        .header { text-align: center; margin-bottom: 30px; }
+        .leads-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .leads-table th, .leads-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        .leads-table th { background: #f8fafc; font-weight: 600; }
+        .leads-table tr:hover { background: #f9fafb; }
+        .status-badge { 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 12px; 
+            font-weight: bold;
+        }
+        .status-cold { background: #e5e7eb; color: #374151; }
+        .status-hot { background: #fee2e2; color: #991b1b; }
+        .status-qualified { background: #d1fae5; color: #065f46; }
+        .btn { 
+            background: #667eea; 
+            color: white; 
+            padding: 8px 16px; 
+            text-decoration: none; 
+            border-radius: 4px; 
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👥 Gestão de Leads</h1>
+            <a href="/" class="btn">← Voltar ao Dashboard</a>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <strong>{{ leads|length }}</strong> leads encontrados
+        </div>
+
+        <table class="leads-table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Telefone</th>
+                    <th>Status</th>
+                    <th>Score</th>
+                    <th>Fonte</th>
+                    <th>Criado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lead in leads %}
+                <tr>
+                    <td>{{ lead.name or 'Lead sem nome' }}</td>
+                    <td>{{ lead.phone }}</td>
+                    <td>
+                        <span class="status-badge status-{{ lead.status }}">
+                            {{ lead.status }}
+                        </span>
+                    </td>
+                    <td><strong>{{ lead.score }}</strong>/100</td>
+                    <td>{{ lead.source }}</td>
+                    <td>{{ lead.created_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if not leads %}
+        <div style="text-align: center; padding: 40px; color: #6b7280;">
+            <h3>Nenhum lead encontrado</h3>
+            <p>Use o formulário de teste no dashboard para criar leads.</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
