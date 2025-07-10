@@ -6,12 +6,14 @@
     <title>Gestão de Leads - Previdas</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
+        
+        body {
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
+        
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -19,27 +21,77 @@
             border-radius: 15px;
             padding: 30px;
         }
-        .header { text-align: center; margin-bottom: 30px; }
-        .leads-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .leads-table th, .leads-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        .leads-table th { background: #f8fafc; font-weight: 600; }
-        .leads-table tr:hover { background: #f9fafb; }
-        .status-badge { 
-            padding: 4px 8px; 
-            border-radius: 4px; 
-            font-size: 12px; 
+        
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+        }
+        
+        .leads-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 20px; 
+        }
+        
+        .leads-table th, .leads-table td { 
+            padding: 12px; 
+            text-align: left; 
+            border-bottom: 1px solid #ddd; 
+        }
+        
+        .leads-table th { 
+            background: #f8fafc; 
+            font-weight: 600; 
+        }
+        
+        /* TORNAR LINHAS CLICÁVEIS */
+        .leads-table tr {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .leads-table tbody tr:hover { 
+            background: #f0f9ff; 
+            transform: scale(1.01);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
             font-weight: bold;
         }
+        
         .status-cold { background: #e5e7eb; color: #374151; }
-        .status-hot { background: #fee2e2; color: #991b1b; }
+        .status-new { background: #dbeafe; color: #1e40af; }
         .status-qualified { background: #d1fae5; color: #065f46; }
-        .btn { 
-            background: #667eea; 
-            color: white; 
-            padding: 8px 16px; 
-            text-decoration: none; 
-            border-radius: 4px; 
+        
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
             font-size: 12px;
+            margin-right: 10px;
+        }
+        
+        .btn:hover {
+            background: #5a67d8;
+        }
+        
+        .score-high { color: #dc2626; font-weight: bold; }
+        .score-medium { color: #d97706; font-weight: bold; }
+        .score-low { color: #059669; font-weight: bold; }
+        
+        .phone-link {
+            color: #2563eb;
+            text-decoration: none;
+        }
+        
+        .phone-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -63,21 +115,35 @@
                     <th>Score</th>
                     <th>Fonte</th>
                     <th>Criado</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
                 {% for lead in leads %}
-                <tr>
+                <tr onclick="window.location.href='/lead/{{ lead.phone }}'">
                     <td>{{ lead.name or 'Lead sem nome' }}</td>
-                    <td>{{ lead.phone }}</td>
+                    <td>
+                        <a href="/lead/{{ lead.phone }}" class="phone-link">
+                            {{ lead.phone }}
+                        </a>
+                    </td>
                     <td>
                         <span class="status-badge status-{{ lead.status }}">
                             {{ lead.status }}
                         </span>
                     </td>
-                    <td><strong>{{ lead.score }}</strong>/100</td>
+                    <td>
+                        <span class="{% if lead.score >= 80 %}score-high{% elif lead.score >= 50 %}score-medium{% else %}score-low{% endif %}">
+                            {{ lead.score }}
+                        </span>/100
+                    </td>
                     <td>{{ lead.source }}</td>
                     <td>{{ lead.created_at }}</td>
+                    <td>
+                        <a href="/lead/{{ lead.phone }}" class="btn" onclick="event.stopPropagation()">
+                            Ver Conversa
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

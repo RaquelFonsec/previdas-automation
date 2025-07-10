@@ -1,15 +1,172 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-    <title>Detalhes do Lead</title>
-    <style>body { font-family: Arial; padding: 20px; }</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Lead - Previdas</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+        }
+        
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+        }
+        
+        .lead-profile {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .conversation-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .message {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+        
+        .message-bot {
+            background: #e5e7eb;
+            margin-left: auto;
+            text-align: right;
+        }
+        
+        .message-client {
+            background: #dbeafe;
+            margin-right: auto;
+        }
+        
+        .message-time {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+        
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        
+        .btn:hover {
+            background: #5a67d8;
+        }
+        
+        .score-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .score-high { background: #fee2e2; color: #991b1b; }
+        .score-medium { background: #fef3c7; color: #92400e; }
+        .score-low { background: #d1fae5; color: #065f46; }
+        
+        .automation-log {
+            background: #f9fafb;
+            padding: 10px;
+            border-left: 4px solid #3b82f6;
+            margin: 5px 0;
+        }
+        
+        .automation-time {
+            font-size: 12px;
+            color: #6b7280;
+        }
+    </style>
 </head>
 <body>
-    <h1>Detalhes do Lead</h1>
-    <p>Nome: {{ lead.name or 'N/A' }}</p>
-    <p>Telefone: {{ lead.phone }}</p>
-    <p>Score: {{ lead.score }}/100</p>
-    <p>Status: {{ lead.status }}</p>
-    <a href="/leads">← Voltar para lista</a>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Detalhes do Lead</h1>
+            <a href="/leads" class="btn">← Voltar para Leads</a>
+            <a href="/" class="btn">🏠 Dashboard</a>
+        </div>
+
+        <!-- PERFIL DO LEAD -->
+        <div class="lead-profile">
+            <h2>👤 {{ lead.name or 'Lead sem nome' }}</h2>
+            <p><strong>📞 Telefone:</strong> {{ lead.phone }}</p>
+            <p><strong>📊 Score:</strong> 
+                <span class="score-badge {% if lead.score >= 80 %}score-high{% elif lead.score >= 50 %}score-medium{% else %}score-low{% endif %}">
+                    {{ lead.score }}/100
+                </span>
+            </p>
+            <p><strong>🏷️ Status:</strong> {{ lead.status }}</p>
+            <p><strong>📱 Fonte:</strong> {{ lead.source }}</p>
+            <p><strong>📅 Criado:</strong> {{ lead.created_at }}</p>
+        </div>
+
+        <!-- HISTÓRICO DE CONVERSAS -->
+        <div class="conversation-section">
+            <h3>💬 Histórico de Conversas</h3>
+            
+            {% if conversations %}
+                {% for conv in conversations %}
+                <div class="message {% if conv.is_bot %}message-bot{% else %}message-client{% endif %}">
+                    <div>
+                        <strong>{% if conv.is_bot %}🤖 Bot{% else %}👤 Cliente{% endif %}:</strong>
+                        {{ conv.message }}
+                    </div>
+                    <div class="message-time">{{ conv.timestamp }}</div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p style="text-align: center; color: #6b7280; padding: 20px;">
+                    Nenhuma conversa registrada ainda.
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- LOGS DE AUTOMAÇÃO -->
+        <div class="conversation-section">
+            <h3>🔄 Logs de Automação</h3>
+            
+            {% if automation_logs %}
+                {% for log in automation_logs %}
+                <div class="automation-log">
+                    <strong>{{ log.trigger_type }}</strong> - {{ log.action_taken }}
+                    <span style="color: {% if log.result == 'success' %}#059669{% else %}#dc2626{% endif %};">
+                        ({{ log.result }})
+                    </span>
+                    <div class="automation-time">{{ log.timestamp }}</div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p style="text-align: center; color: #6b7280; padding: 20px;">
+                    Nenhum log de automação encontrado.
+                </p>
+            {% endif %}
+        </div>
+    </div>
 </body>
 </html>
