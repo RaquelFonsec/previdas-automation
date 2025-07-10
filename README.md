@@ -24,7 +24,7 @@ O Previdas Automation Engine é uma "máquina de receita" inteligente que proces
 - Background tasks para processamento não-bloqueante
 - **Notificação automática da equipe de vendas** para leads quentes
 
-### 📊 Dashboard Web Interativo **[NOVO - 100% FUNCIONAL]**
+### 📊 Dashboard Web Interativo **[ 100% FUNCIONAL]**
 - **Interface visual profissional** em tempo real para gestores
 - **Cards clicáveis** com detalhes específicos de cada métrica
 - **17 elementos interativos** com modais informativos
