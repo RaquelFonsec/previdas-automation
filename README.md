@@ -245,7 +245,7 @@ curl -X POST "http://localhost:8000/webhook/whatsapp" \
 curl "http://localhost:8000/api/analytics/dashboard"
 ```
 
-## 🎨 Stack do Frontend **[ATUALIZADO]**
+## 🎨 Stack do Frontend 
 
 ### Tecnologias Utilizadas:
 - **Templates**: Jinja2 (server-side rendering)
@@ -324,7 +324,7 @@ Automação → Banco de Dados → Dashboard Update → Cards Clicáveis → Mod
 Lista Leads → Filtros → Detalhes → Ações Manuais → Histórico Completo
 ```
 
-## 💡 Demonstração Visual **[NOVA SEÇÃO]**
+## 💡 Demonstração Visual 
 
 ### 🎬 Fluxo de Teste Completo:
 1. **Acesse Dashboard**: http://localhost:8000/
