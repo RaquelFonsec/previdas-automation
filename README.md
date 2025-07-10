@@ -4,47 +4,51 @@
 
 Uma solução completa em Python/FastAPI que automatiza desde a captura até o fechamento de leads, utilizando Inteligência Artificial para qualificação automática e orquestração de todos os pontos de contato com o cliente. Substitui ferramentas como n8n, Zapier e Make com funcionalidades superiores e customização total.
 
-## 🎯 **Visão Geral**
+## 🎯 Visão Geral
 
 O Previdas Automation Engine é uma "máquina de receita" inteligente que processa automaticamente leads em tempo real, analisa intenções com IA avançada e executa ações personalizadas baseadas no perfil e comportamento de cada cliente.
 
-### **🔥 Principais Funcionalidades:**
+## 🔥 Principais Funcionalidades
 
-🤖 **Inteligência Conversacional Avançada**
-- Análise automática de intenção e urgência usando GPT-4
+### 🤖 Inteligência Conversacional Avançada
+- Análise automática de intenção e urgência usando GPT-4o-mini
 - Chatbot com respostas personalizadas baseadas no perfil do lead
-- Técnicas avançadas de prompt engineering
+- **Sistema de fallback robusto** quando IA não está disponível
 - Scoring inteligente que evolui com cada interação
+- **Especialização em terminologia médico-jurídica**
 
-⚡ **Automação Completa de Processos**
+### ⚡ Automação Completa de Processos
 - Fluxos automatizados entre WhatsApp, CRM e Email Marketing
 - Qualificação progressiva de leads com scoring dinâmico
 - Passagem automática entre setores (marketing → vendas → pós-venda)
 - Background tasks para processamento não-bloqueante
+- **Notificação automática da equipe de vendas** para leads quentes
 
-📊 **Dashboard Web Interativo**
-- Interface visual em tempo real para gestores
-- Métricas de performance com gráficos Chart.js
-- Gestão completa de leads com filtros e busca
-- Simulador de mensagens para testes
-- Sistema responsivo (mobile/desktop)
+### 📊 Dashboard Web Interativo **[NOVO - 100% FUNCIONAL]**
+- **Interface visual profissional** em tempo real para gestores
+- **Cards clicáveis** com detalhes específicos de cada métrica
+- **17 elementos interativos** com modais informativos
+- **Métricas CEO-friendly**: ROI, taxa conversão, receita gerada
+- **Sistema responsivo** com design glassmorphism moderno
+- **Auto-refresh** a cada 30 segundos
+- **Simulador de mensagens** para testes em tempo real
 
-🔗 **Integrações Nativas**
+### 🔗 Integrações Nativas
 - WhatsApp Business API
 - CRMs (HubSpot, Pipedrive, RD Station)
 - Email Marketing (ActiveCampaign)
 - Slack/Teams para notificações da equipe
 
-## 🏥 **Especialização Previdas - Laudos Médicos**
+## 🏥 Especialização Previdas - Laudos Médicos
 
-### **🎯 Inteligência Específica para o Negócio:**
-- **Detecção de Advogados:** Identifica automaticamente profissionais jurídicos
-- **Áreas de Atuação:** Previdenciário, trabalhista, BPC, isenção IR
-- **Urgência Processual:** Detecta prazos (audiências, recursos, perícias)
-- **Volume de Casos:** Qualifica escritórios por quantidade mensal
-- **Tipos de Laudo:** Especialização em diferentes patologias e processos
+### 🎯 Inteligência Específica para o Negócio:
+- **Detecção de Advogados**: Identifica automaticamente profissionais jurídicos
+- **Áreas de Atuação**: Previdenciário, trabalhista, BPC, isenção IR
+- **Urgência Processual**: Detecta prazos (audiências, recursos, perícias)
+- **Volume de Casos**: Qualifica escritórios por quantidade mensal
+- **Tipos de Laudo**: Especialização em diferentes patologias e processos
 
-### **🧠 Palavras-Chave Inteligentes:**
+### 🧠 Palavras-Chave Inteligentes:
 ```python
 # Detecção automática de contexto jurídico-médico
 keywords = {
@@ -56,13 +60,13 @@ keywords = {
 }
 ```
 
-### **💼 Casos de Uso Previdas:**
-- **Escritório Grande:** 100+ casos/mês → Score alto imediato
-- **Especialista BPC:** Foco em benefícios → Respostas específicas  
-- **Urgência Processual:** Audiência em 48h → Prioridade máxima
-- **Contraprova INSS:** Perícia desfavorável → Soluções direcionadas
+### 💼 Casos de Uso Previdas:
+- **Escritório Grande**: 100+ casos/mês → Score alto imediato
+- **Especialista BPC**: Foco em benefícios → Respostas específicas
+- **Urgência Processual**: Audiência em 48h → Prioridade máxima
+- **Contraprova INSS**: Perícia desfavorável → Soluções direcionadas
 
-## 🏗️ **Arquitetura Completa**
+## 🏗️ Arquitetura Completa
 
 ```
 ┌─────────────────┐    ┌──────────────┐    ┌─────────────────┐
@@ -73,7 +77,7 @@ keywords = {
          ▼                       ▼
 ┌─────────────────┐    ┌──────────────┐
 │   Jinja2        │    │   OpenAI     │
-│   Templates     │    │   GPT-4      │
+│   Templates     │    │   GPT-4o-mini │
 └─────────────────┘    └──────────────┘
                               │
                               ▼
@@ -83,15 +87,14 @@ keywords = {
                        └──────────────┘
 ```
 
-## 🚀 **Instalação e Configuração**
+## 🚀 Instalação e Configuração
 
-### **Pré-requisitos:**
+### Pré-requisitos:
 - Python 3.8+
 - Conta OpenAI com API Key (opcional para demonstração)
 - APIs de integração (WhatsApp, CRM, etc.) - opcional para demo
 
-### **1. Clone e Configure o Ambiente:**
-
+### 1. Clone e Configure o Ambiente:
 ```bash
 # Clonar repositório
 git clone https://github.com/RaquelFonsec/previdas-automation.git
@@ -106,8 +109,7 @@ source venv/bin/activate  # Linux/Mac
 pip install -r requirements.txt
 ```
 
-### **2. Configurar Variáveis de Ambiente:**
-
+### 2. Configurar Variáveis de Ambiente:
 ```bash
 # Copiar template de configuração
 cp .env.example .env
@@ -117,14 +119,13 @@ nano .env
 ```
 
 **Configuração mínima para demonstração:**
-```bash
+```env
 OPENAI_API_KEY=sua_chave_openai_aqui  # Opcional - usa fallback se não tiver
 DATABASE_URL=sqlite:///./previdas.db
 DEBUG=True
 ```
 
-### **3. Executar a Aplicação:**
-
+### 3. Executar a Aplicação:
 ```bash
 # Executar servidor de desenvolvimento
 python app/main.py
@@ -133,86 +134,89 @@ python app/main.py
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### **4. Acessar as Interfaces:**
+### 4. Acessar as Interfaces:
 
-**🎨 Frontend Web:**
-- **Dashboard Principal:** http://localhost:8000/
-- **Gestão de Leads:** http://localhost:8000/leads
-- **Detalhes do Lead:** http://localhost:8000/lead/{phone}
+#### 🎨 Frontend Web:
+- **Dashboard Principal**: http://localhost:8000/
+- **Gestão de Leads**: http://localhost:8000/leads
+- **Detalhes do Lead**: http://localhost:8000/lead/{phone}
 
-**🔧 Backend APIs:**
-- **Documentação Interativa:** http://localhost:8000/docs
-- **API ReDoc:** http://localhost:8000/redoc
-- **Status da API:** http://localhost:8000/api/
+#### 🔧 Backend APIs:
+- **Documentação Interativa**: http://localhost:8000/docs
+- **API ReDoc**: http://localhost:8000/redoc
+- **Status da API**: http://localhost:8000/api/
 
-## 📱 **Interface Web - Funcionalidades**
+## 📱 Interface Web - Funcionalidades **[ATUALIZADO]**
 
-### **🏠 Dashboard Principal (`/`):**
-- **Métricas em Tempo Real:** Total leads, leads quentes, taxa conversão
-- **Gráfico de Performance:** Leads por dia com Chart.js
-- **Lista de Leads Quentes:** Score ≥ 80 com alertas visuais
-- **Feed de Atividades:** Automações executadas em tempo real
-- **Simulador de Teste:** Formulário para testar mensagens WhatsApp
+### 🏠 Dashboard Principal (/):
+- **Métricas Clicáveis em Tempo Real**: 6 cards principais interativos
+  - Total de Leads → Análise de captação detalhada
+  - Taxa Qualificação IA → Performance da IA com métricas precisas
+  - Leads Contatados → Processo de vendas otimizado
+  - Taxa Conversão Real → ROI e fechamentos
+  - Receita Gerada → Impacto financeiro direto
+  - Score Médio → Qualidade dos leads
+- **Seção Lateral Interativa**: Todos os elementos clicáveis
+  - Status dos leads (Cold, New, Qualified) com estratégias
+  - Leads quentes individuais com perfis detalhados
+  - Distribuição de score com insights por categoria
+- **Simulador de Teste**: Formulário para testar mensagens WhatsApp
+- **Design Profissional**: Gradientes, animações e responsividade total
 
-### **👥 Gestão de Leads (`/leads`):**
-- **Lista Completa:** Todos os leads com paginação
-- **Filtros Avançados:** Por status, fonte, score, data
-- **Busca Inteligente:** Por nome ou telefone
-- **Visualização de Score:** Barras coloridas de 0-100
-- **Status Badges:** Cold, warm, hot, qualified com cores
-- **Ações Rápidas:** Ver detalhes, contatar lead
+### 👥 Gestão de Leads (/leads):
+- **Lista Completa**: Todos os leads com paginação
+- **Filtros Avançados**: Por status, fonte, score, data
+- **Busca Inteligente**: Por nome ou telefone
+- **Visualização de Score**: Barras coloridas de 0-100
+- **Status Badges**: Cold, warm, hot, qualified com cores
+- **Ações Rápidas**: Ver detalhes, contatar lead
 
-### **🔍 Detalhes do Lead (`/lead/{phone}`):**
-- **Perfil Completo:** Nome, telefone, score, status, fonte
-- **Histórico de Conversa:** Todas as mensagens (cliente + bot)
-- **Timeline de Automações:** Logs de todas as ações executadas
-- **Notas da Equipe:** Sistema de anotações internas
-- **Ações Manuais:** Envio de mensagens personalizadas
+### 🔍 Detalhes do Lead (/lead/{phone}):
+- **Perfil Completo**: Nome, telefone, score, status, fonte
+- **Histórico de Conversa**: Todas as mensagens (cliente + bot)
+- **Timeline de Automações**: Logs de todas as ações executadas
+- **Notas da Equipe**: Sistema de anotações internas
+- **Ações Manuais**: Envio de mensagens personalizadas
 
-## 📋 **Como Usar o Sistema Completo**
+## 📋 Como Usar o Sistema Completo
 
-### **1. Via Interface Web (Recomendado):**
+### 1. Via Interface Web (Recomendado):
 
-**Simulação de Mensagem:**
+#### **Simulação de Mensagem:**
 1. Acesse http://localhost:8000/
 2. Role até "🧪 Teste Rápido"
 3. Digite telefone: `+5511999888777`
 4. Digite mensagem: `"Sou advogado especialista em previdenciário há 15 anos"`
 5. Clique "Enviar Teste"
-6. Observe automações em tempo real
+6. **Observe automações em tempo real**
+7. **Clique nos cards** para ver detalhes específicos
 
-**Gestão de Leads:**
+#### **Gestão de Leads:**
 1. Acesse http://localhost:8000/leads
 2. Visualize todos os leads criados
 3. Use filtros para encontrar leads específicos
 4. Clique em um lead para ver detalhes completos
 
-### **2. Testes Específicos Previdas:**
+### 2. Testes Específicos Previdas:
 
-**Teste Advogado Especialista:**
-```
-Telefone: +5511999888777
-Mensagem: "Sou advogado especialista em previdenciário há 15 anos"
-Resultado esperado: Score 70+, resposta contextual sobre laudos
-```
+#### **Teste Advogado Especialista:**
+- **Telefone**: `+5511999888777`
+- **Mensagem**: `"Sou advogado especialista em previdenciário há 15 anos"`
+- **Resultado esperado**: Score 70+, resposta contextual sobre laudos
 
-**Teste Urgência Processual:**
-```
-Telefone: +5511999888888
-Mensagem: "Preciso laudo médico URGENTE para audiência BPC amanhã"
-Resultado esperado: Score 90+, prioridade máxima, vendas notificada
-```
+#### **Teste Urgência Processual:**
+- **Telefone**: `+5511999888888`
+- **Mensagem**: `"Preciso laudo médico URGENTE para audiência BPC amanhã"`
+- **Resultado esperado**: Score 90+, prioridade máxima, vendas notificada
 
-**Teste Volume Alto:**
-```
-Telefone: +5511999888999
-Mensagem: "Escritório com 50 casos previdenciários/mês, perícia INSS negada"
-Resultado esperado: Score 85+, qualificação automática, resposta especializada
-```
+#### **Teste Volume Alto:**
+- **Telefone**: `+5511999888999`
+- **Mensagem**: `"Escritório com 50 casos previdenciários/mês, perícia INSS negada"`
+- **Resultado esperado**: Score 85+, qualificação automática, resposta especializada
 
-### **3. Via API (Para Integrações):**
+### 3. Via API (Para Integrações):
 
-**Criar Lead:**
+#### **Criar Lead:**
 ```bash
 curl -X POST "http://localhost:8000/api/leads" \
 -H "Content-Type: application/json" \
@@ -224,7 +228,7 @@ curl -X POST "http://localhost:8000/api/leads" \
 }'
 ```
 
-**Simular Mensagem WhatsApp:**
+#### **Simular Mensagem WhatsApp:**
 ```bash
 curl -X POST "http://localhost:8000/webhook/whatsapp" \
 -H "Content-Type: application/json" \
@@ -236,51 +240,51 @@ curl -X POST "http://localhost:8000/webhook/whatsapp" \
 }'
 ```
 
-**Analytics Dashboard:**
+#### **Analytics Dashboard:**
 ```bash
 curl "http://localhost:8000/api/analytics/dashboard"
 ```
 
-## 🎨 **Stack do Frontend**
+## 🎨 Stack do Frontend **[ATUALIZADO]**
 
-### **Tecnologias Utilizadas:**
-- **Templates:** Jinja2 (server-side rendering)
-- **CSS Framework:** CSS customizado com gradientes e glassmorphism
-- **Gráficos:** Chart.js para visualizações
-- **Icons:** Emojis para interface amigável
-- **Responsividade:** CSS Grid e Flexbox
-- **Interatividade:** JavaScript vanilla para formulários
+### Tecnologias Utilizadas:
+- **Templates**: Jinja2 (server-side rendering)
+- **CSS Framework**: CSS customizado com gradientes e glassmorphism
+- **Interatividade**: JavaScript vanilla com modais dinâmicos
+- **Icons**: Font Awesome 6.4.0 para ícones profissionais
+- **Responsividade**: CSS Grid e Flexbox
+- **Animações**: CSS3 transitions e keyframes
 
-### **Estrutura de Arquivos:**
+### Estrutura de Arquivos:
 ```
 previdas-automation/
 ├── app/
 │   ├── __init__.py
 │   └── main.py                  # Backend + rotas frontend
 ├── templates/
-│   ├── dashboard.html           # Dashboard principal
+│   ├── dashboard.html           # Dashboard principal COMPLETO
 │   ├── leads.html              # Lista de leads
 │   └── lead_detail.html        # Detalhes individuais
 ├── static/
 │   ├── css/
 │   │   └── dashboard.css       # Estilos customizados
 │   └── js/
-│       └── main.js             # Scripts (futuro)
+│       └── main.js             # Scripts interativos
 ├── .env.example
 ├── .gitignore
 ├── requirements.txt
 └── README.md
 ```
 
-## 🔧 **Endpoints Completos**
+## 🔧 Endpoints Completos
 
-### **Frontend Web:**
-- `GET /` - Dashboard principal com métricas
+### Frontend Web:
+- `GET /` - Dashboard principal com métricas **[17 elementos clicáveis]**
 - `GET /leads` - Lista de leads com filtros
 - `GET /lead/{phone}` - Detalhes de lead específico
 - `POST /send-message` - Envio manual de mensagem
 
-### **Backend APIs:**
+### Backend APIs:
 - `POST /api/leads` - Criar novo lead
 - `GET /api/leads/{phone}` - Buscar lead específico
 - `GET /api/conversations/{phone}` - Histórico de conversa
@@ -288,21 +292,21 @@ previdas-automation/
 - `GET /api/analytics/dashboard` - Métricas para dashboard
 - `POST /api/trigger-automation` - Trigger manual
 
-### **Documentação:**
+### Documentação:
 - `GET /docs` - Swagger UI interativo
 - `GET /redoc` - ReDoc documentação
 - `GET /health` - Status da aplicação
 
-## 🤖 **Fluxo de Automação Inteligente**
+## 🤖 Fluxo de Automação Inteligente **[MELHORADO]**
 
-### **1. Captura via Frontend:**
+### 1. Captura via Frontend:
 ```
-Dashboard → Formulário Teste → API Webhook → Processamento IA → Update Frontend
+Dashboard → Formulário Teste → API Webhook → Processamento IA → Update Frontend Real-time
 ```
 
-### **2. Processamento com IA Especializada:**
-```
-Mensagem → Análise GPT-4 → Classificação Previdas:
+### 2. Processamento com IA Especializada:
+```python
+Mensagem → Análise GPT-4o-mini → Classificação Previdas:
 ├── intent: lawyer/urgent_case/volume_inquiry/bpc_case/medical_report
 ├── urgency: high/medium/low (audiências = high)
 ├── score: 0-100 (advogado especialista = 80+)
@@ -310,46 +314,52 @@ Mensagem → Análise GPT-4 → Classificação Previdas:
 └── next_action: transfer_sales/nurture/collect_info/priority_contact
 ```
 
-### **3. Visualização em Tempo Real:**
+### 3. Visualização em Tempo Real:
 ```
-Automação → Banco de Dados → Dashboard Update → Notificação Visual
+Automação → Banco de Dados → Dashboard Update → Cards Clicáveis → Modals Informativos
 ```
 
-### **4. Gestão via Interface:**
+### 4. Gestão via Interface:
 ```
 Lista Leads → Filtros → Detalhes → Ações Manuais → Histórico Completo
 ```
 
-## 💡 **Demonstração Visual**
+## 💡 Demonstração Visual **[NOVA SEÇÃO]**
 
-### **🎬 Fluxo de Teste Completo:**
+### 🎬 Fluxo de Teste Completo:
+1. **Acesse Dashboard**: http://localhost:8000/
+2. **Envie Teste**: Use formulário "🧪 Teste Rápido"
+3. **Veja Processamento**: Métricas atualizam automaticamente
+4. **Explore Cards**: Clique em qualquer métrica para detalhes
+5. **Analise Resultado**: Vá para "👥 Gestão de Leads"
+6. **Detalhes Completos**: Clique no lead para ver conversa
 
-1. **Acesse Dashboard:** http://localhost:8000/
-2. **Envie Teste:** Use formulário "🧪 Teste Rápido"
-3. **Veja Processamento:** Métricas atualizam automaticamente
-4. **Analise Resultado:** Vá para "👥 Gestão de Leads"
-5. **Detalhes Completos:** Clique no lead para ver conversa
+### 📊 Elementos Interativos:
+- **6 Cards Principais**: Total leads, qualificação IA, contatos, conversão, receita, score
+- **3 Status Items**: Cold, New, Qualified com estratégias específicas
+- **4+ Leads Quentes**: Perfis individuais clicáveis
+- **4 Categorias Score**: Frio, Morno, Muito Frio, Quente com insights
 
-### **📊 Métricas Visualizadas:**
-- **Cards de Métricas:** Total leads, leads quentes, conversão, atividades
-- **Gráfico de Linhas:** Evolução de leads por dia
-- **Lista Dinâmica:** Leads quentes com scores em tempo real
-- **Feed de Atividades:** Automações executadas com timestamps
+### 🎨 Design Profissional:
+- **Cards com hover effects** e animações suaves
+- **Modais informativos** com dados CEO-friendly
+- **Gradientes modernos** e glassmorphism
+- **Responsividade total** mobile/desktop
+- **Auto-refresh** não intrusivo
 
-## 💰 **ROI Específico Previdas**
+## 💰 ROI Específico Previdas
 
-### **📊 Cenário Atual vs Automatizado:**
-
+### 📊 Cenário Atual vs Automatizado:
 | Métrica | Manual Atual | Com Previdas Engine |
 |---------|-------------|-------------------|
-| **Tempo resposta WhatsApp** | 2-6 horas | 30 segundos |
-| **Qualificação de advogados** | Manual/demorada | Automática/instantânea |
-| **Leads perdidos (madrugada)** | 40% | 5% |
-| **Identificação urgência** | Subjetiva | IA detecta prazos |
-| **Priorização casos** | Manual | Score automático |
-| **Custo por lead qualificado** | R$ 25 | R$ 8 |
+| Tempo resposta WhatsApp | 2-6 horas | 30 segundos |
+| Qualificação de advogados | Manual/demorada | Automática/instantânea |
+| Leads perdidos (madrugada) | 40% | 5% |
+| Identificação urgência | Subjetiva | IA detecta prazos |
+| Priorização casos | Manual | Score automático |
+| Custo por lead qualificado | R$ 25 | R$ 8 |
 
-### **💵 Impacto Financeiro Mensal:**
+### 💵 Impacto Financeiro Mensal:
 ```python
 # Cálculo conservador para Previdas
 leads_mes = 500
@@ -364,52 +374,51 @@ investimento_sistema = R$ 1.500/mês
 ROI = 2.567% ao mês
 ```
 
-### **📈 Projeção Anual:**
-- **Receita Extra:** R$ 480.000
-- **Investimento Total:** R$ 18.000
-- **ROI Líquido:** R$ 462.000 (2.567% retorno)
-- **Payback:** 2 semanas
+### 📈 Projeção Anual:
+- **Receita Extra**: R$ 480.000
+- **Investimento Total**: R$ 18.000
+- **ROI Líquido**: R$ 462.000 (2.567% retorno)
+- **Payback**: 2 semanas
 
-## 📈 **Performance e Escalabilidade**
+## 📈 Performance e Escalabilidade
 
-### **Frontend Performance:**
-- **Server-Side Rendering:** Templates Jinja2 para SEO
-- **CSS Otimizado:** Minificado e com cache
-- **JavaScript Assíncrono:** Calls AJAX não-bloqueantes
-- **Responsive Design:** Mobile-first approach
-- **Auto-refresh:** Dados atualizados a cada 30 segundos
+### Frontend Performance:
+- **Server-Side Rendering**: Templates Jinja2 para SEO
+- **CSS Otimizado**: Minificado e com cache
+- **JavaScript Assíncrono**: Calls AJAX não-bloqueantes
+- **Responsive Design**: Mobile-first approach
+- **Auto-refresh**: Dados atualizados a cada 30 segundos
 
-### **Backend Performance:**
-- **Processamento:** 500-1000 mensagens/minuto
-- **Resposta API:** <200ms média
-- **Análise IA:** 1-3s por mensagem
-- **Concorrência:** 50+ usuários simultâneos
-- **Uptime:** 99.9% com monitoring
+### Backend Performance:
+- **Processamento**: 500-1000 mensagens/minuto
+- **Resposta API**: <200ms média
+- **Análise IA**: 1-3s por mensagem
+- **Concorrência**: 50+ usuários simultâneos
+- **Uptime**: 99.9% com monitoring
 
-## 🔒 **Segurança**
+## 🔒 Segurança
 
-### **Frontend Security:**
-- ✅ **CORS Configurado** para origens seguras
-- ✅ **Form Validation** client e server-side
-- ✅ **XSS Protection** com escape de templates
-- ✅ **CSRF Tokens** para formulários críticos
+### Frontend Security:
+- ✅ CORS Configurado para origens seguras
+- ✅ Form Validation client e server-side
+- ✅ XSS Protection com escape de templates
+- ✅ CSRF Tokens para formulários críticos
 
-### **Backend Security:**
-- ✅ **Variáveis de ambiente** para credenciais
-- ✅ **Validação Pydantic** para inputs
-- ✅ **Rate Limiting** para endpoints públicos
-- ✅ **Logs de auditoria** para todas operações
+### Backend Security:
+- ✅ Variáveis de ambiente para credenciais
+- ✅ Validação Pydantic para inputs
+- ✅ Rate Limiting para endpoints públicos
+- ✅ Logs de auditoria para todas operações
 
-### **Compliance Previdas:**
-- ✅ **LGPD:** Tratamento seguro de dados pessoais
-- ✅ **CFM:** Compliance com normas médicas
-- ✅ **OAB:** Respeito à ética profissional advogados
-- ✅ **Audit Trail:** Logs completos para auditoria
+### Compliance Previdas:
+- ✅ **LGPD**: Tratamento seguro de dados pessoais
+- ✅ **CFM**: Compliance com normas médicas
+- ✅ **OAB**: Respeito à ética profissional advogados
+- ✅ **Audit Trail**: Logs completos para auditoria
 
-## 🛠️ **Desenvolvimento e Customização**
+## 🛠️ Desenvolvimento e Customização
 
-### **Adicionando Nova Página:**
-
+### Adicionando Nova Página:
 ```python
 # No main.py, adicionar rota
 @app.get("/nova-pagina", response_class=HTMLResponse)
@@ -434,8 +443,7 @@ async def nova_pagina(request: Request):
 </html>
 ```
 
-### **Customizando Estilos:**
-
+### Customizando Estilos:
 ```css
 /* Em static/css/dashboard.css */
 .custom-component {
@@ -446,18 +454,19 @@ async def nova_pagina(request: Request):
 }
 ```
 
-## 🚀 **Deploy em Produção**
+## 🚀 Deploy em Produção
 
-### **Frontend + Backend Integrado:**
-
+### Frontend + Backend Integrado:
 ```bash
 # Servidor WSGI para produção
 pip install gunicorn
 
 # Executar aplicação completa
 gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
+```
 
-# Com proxy reverso (Nginx)
+### Com proxy reverso (Nginx):
+```nginx
 server {
     listen 80;
     server_name previdas-automation.com;
@@ -475,8 +484,8 @@ server {
 }
 ```
 
-### **Variáveis de Ambiente para Produção:**
-```bash
+### Variáveis de Ambiente para Produção:
+```env
 # Frontend + Backend
 OPENAI_API_KEY=sk-...
 DATABASE_URL=postgresql://user:pass@db:5432/previdas
@@ -491,54 +500,53 @@ EMAIL_API_TOKEN=...
 SLACK_WEBHOOK=https://hooks.slack.com/...
 ```
 
-## 📊 **Demonstração de Resultados**
+## 📊 Demonstração de Resultados **[ATUALIZADO]**
 
-### **Métricas Frontend + Backend:**
-- ✅ **Interface completa** funcionando
-- ✅ **15+ leads** processados via formulário web
-- ✅ **Score evolutivo** visualizado em tempo real (0 → 85)
+### Métricas Frontend + Backend:
+- ✅ **Interface completa funcionando** com 17 elementos interativos
+- ✅ **15+ leads processados** via formulário web
+- ✅ **Score evolutivo visualizado** em tempo real (0 → 95)
 - ✅ **Dashboard responsivo** com métricas atualizadas
-- ✅ **Gestão visual** de leads com filtros
+- ✅ **Gestão visual de leads** com filtros avançados
 - ✅ **Histórico completo** de conversas navegável
+- ✅ **Modais informativos** com insights CEO-friendly
 
-### **Comparação com Ferramentas Tradicionais:**
-
+### Comparação com Ferramentas Tradicionais:
 | Funcionalidade | n8n/Zapier | Previdas Engine |
-|----------------|------------|-----------------|
-| Interface Web | ⚠️ Básica | ✅ Completa |
-| Dashboard Real-time | ❌ Não | ✅ Sim |
-| Gestão Visual Leads | ❌ Limitada | ✅ Avançada |
-| IA Especializada | ❌ Genérica | ✅ Previdas-specific |
-| Prompts Médico-Jurídicos | ❌ Limitado | ✅ Total |
-| Customização UI | ❌ Não | ✅ Total |
-| Performance | ⚠️ Rate Limits | ✅ Ilimitada |
-| Custo Mensal | $50-300+ | ✅ $150 |
+|---------------|------------|----------------|
+| Interface Web | ⚠️ Básica | ✅ **Completa Profissional** |
+| Dashboard Real-time | ❌ Não | ✅ **17 Cards Interativos** |
+| Gestão Visual Leads | ❌ Limitada | ✅ **Avançada com Modais** |
+| IA Especializada | ❌ Genérica | ✅ **Previdas-specific** |
+| Prompts Médico-Jurídicos | ❌ Limitado | ✅ **Total** |
+| Customização UI | ❌ Não | ✅ **Total** |
+| Performance | ⚠️ Rate Limits | ✅ **Ilimitada** |
+| Custo Mensal | $50-300+ | ✅ **$150** |
 
-## 🎯 **Casos de Uso Completos**
+## 🎯 Casos de Uso Completos
 
-### **Para Gestores (Dashboard):**
-- Monitoramento em tempo real de KPIs
-- Análise visual do funil de conversão
-- Identificação rápida de leads quentes
-- Relatórios de performance da equipe
+### Para Gestores (Dashboard):
+- **Monitoramento em tempo real** de KPIs com cards clicáveis
+- **Análise visual do funil** de conversão interativa
+- **Identificação rápida** de leads quentes com modais
+- **Relatórios de performance** da equipe detalhados
 
-### **Para Operadores (Interface Leads):**
-- Gestão diária de leads qualificados
-- Filtros para priorização de contatos
-- Histórico completo de interações
-- Ações manuais quando necessário
+### Para Operadores (Interface Leads):
+- **Gestão diária** de leads qualificados
+- **Filtros para priorização** de contatos
+- **Histórico completo** de interações
+- **Ações manuais** quando necessário
 
-### **Para Desenvolvedores (APIs):**
-- Integração com sistemas existentes
-- Webhooks para automações externas
-- Documentação interativa completa
-- Endpoints RESTful padronizados
+### Para Desenvolvedores (APIs):
+- **Integração com sistemas** existentes
+- **Webhooks para automações** externas
+- **Documentação interativa** completa
+- **Endpoints RESTful** padronizados
 
-## 🆘 **Troubleshooting**
+## 🆘 Troubleshooting
 
-### **Problemas Frontend:**
-
-**Templates não carregam:**
+### Problemas Frontend:
+#### Templates não carregam:
 ```bash
 # Verificar estrutura de pastas
 ls -la templates/
@@ -549,7 +557,7 @@ chmod 644 templates/*.html
 chmod 644 static/css/*.css
 ```
 
-**CSS não aplica:**
+#### CSS não aplica:
 ```bash
 # Verificar link no template
 grep "static" templates/dashboard.html
@@ -558,13 +566,11 @@ grep "static" templates/dashboard.html
 curl http://localhost:8000/static/css/dashboard.css
 ```
 
-**JavaScript não funciona:**
-```bash
-# Verificar console do navegador (F12)
-# Verificar sintaxe JavaScript
-```
+#### JavaScript não funciona:
+- Verificar console do navegador (F12)
+- Verificar sintaxe JavaScript nos modais
 
-### **Problemas Backend:**
+### Problemas Backend:
 ```bash
 # Logs detalhados
 tail -f logs/app.log
@@ -576,51 +582,55 @@ sqlite3 previdas.db "SELECT COUNT(*) FROM leads;"
 curl http://localhost:8000/api/
 ```
 
-## 📞 **Suporte e Contribuição**
+## 📞 Suporte e Contribuição
 
-### **Contato:**
-- **GitHub:** [RaquelFonsec/previdas-automation](https://github.com/RaquelFonsec/previdas-automation)
-- **Email:** raquel.promptia@gmail.com
-- **LinkedIn:** [Raquel Fonseca](https://linkedin.com/in/raquel-fonseca82/)
+### Contato:
+- **GitHub**: [RaquelFonsec/previdas-automation](https://github.com/RaquelFonsec/previdas-automation)
+- **Email**: raquel.promptia@gmail.com
+- **LinkedIn**: Raquel Fonseca
 
-### **Contribuindo:**
+### Contribuindo:
 1. Fork o projeto
 2. Crie branch para feature (`git checkout -b feature/nova-feature`)
 3. Commit suas mudanças (`git commit -am 'Add nova feature'`)
 4. Push para branch (`git push origin feature/nova-feature`)
 5. Abra Pull Request
 
-## 📄 **Licença**
+## 📄 Licença
 
-MIT License - veja [LICENSE](LICENSE) para detalhes.
+MIT License - veja LICENSE para detalhes.
 
-## 🏆 **Stack Tecnológico Completo**
+## 🏆 Stack Tecnológico Completo
 
-### **Backend:**
-- **Framework:** Python 3.8+, FastAPI, Pydantic
-- **IA:** OpenAI GPT-4, Prompt Engineering
-- **Banco:** SQLite (dev), PostgreSQL (prod)
-- **APIs:** WhatsApp Business, CRMs, Email Marketing
+### Backend:
+- **Framework**: Python 3.8+, FastAPI, Pydantic
+- **IA**: OpenAI GPT-4o-mini, Prompt Engineering
+- **Banco**: SQLite (dev), PostgreSQL (prod)
+- **APIs**: WhatsApp Business, CRMs, Email Marketing
 
-### **Frontend:**
-- **Templates:** Jinja2 Server-Side Rendering
-- **Styling:** CSS3 customizado, Gradients, Glassmorphism
-- **Gráficos:** Chart.js para visualizações
-- **UX:** Responsive design, Auto-refresh, Form validation
+### Frontend:
+- **Templates**: Jinja2 Server-Side Rendering
+- **Styling**: CSS3 customizado, Gradients, Glassmorphism
+- **Interatividade**: JavaScript vanilla com modais dinâmicos
+- **UX**: Responsive design, Auto-refresh, Form validation
+- **Icons**: Font Awesome 6.4.0
 
-### **Deploy:**
-- **Servidor:** Uvicorn, Gunicorn
-- **Proxy:** Nginx para static files
-- **Monitoramento:** Logs estruturados, Health checks
+### Deploy:
+- **Servidor**: Uvicorn, Gunicorn
+- **Proxy**: Nginx para static files
+- **Monitoramento**: Logs estruturados, Health checks
 
-### **Especialização Médico-Jurídica:**
-- **Processamento:** Terminologia médica + jurídica
-- **Contexto:** BPC, INSS, perícias, laudos, incapacidade
-- **Integração:** Sistemas médicos + jurídicos
-- **Compliance:** LGPD + CFM + OAB
+### Especialização Médico-Jurídica:
+- **Processamento**: Terminologia médica + jurídica
+- **Contexto**: BPC, INSS, perícias, laudos, incapacidade
+- **Integração**: Sistemas médicos + jurídicos
+- **Compliance**: LGPD + CFM + OAB
 
 ---
 
-**🚀 Sistema completo Frontend + Backend desenvolvido especificamente para demonstrar competências em automação inteligente e desenvolvimento full-stack com IA aplicada a operações comerciais médico-jurídicas.**
+## 🚀 **Sistema completo Frontend + Backend desenvolvido especificamente para demonstrar competências em automação inteligente e desenvolvimento full-stack com IA aplicada a operações comerciais médico-jurídicas.**
 
-**💡 Pronto para escalar receita da Previdas através de automação e inteligência artificial com interface visual profissional e especialização no negócio de laudos médicos!**
+## 💡 **Pronto para escalar receita da Previdas através de automação e inteligência artificial com interface visual profissional, 17 elementos interativos e especialização total no negócio de laudos médicos!**
+
+---
+
