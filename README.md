@@ -143,7 +143,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 - API ReDoc: http://localhost:8000/redoc
 - Status da API: http://localhost:8000/api/
 
-## 📱 Interface Web - Funcionalidades [ATUALIZADO]
+## 📱 Interface Web - Funcionalidades 
 
 ### 🏠 Dashboard Principal (/):
 - **Métricas Clicáveis em Tempo Real**: 6 cards principais interativos
