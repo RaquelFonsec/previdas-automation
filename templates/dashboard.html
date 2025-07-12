@@ -32,7 +32,7 @@
             --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
             --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
             --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(161, 48, 48, 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
             --border-radius: 12px;
             --border-radius-lg: 16px;
         }
@@ -712,7 +712,7 @@
             </div>
 
             <div class="container">
-                <!-- MÉTRICAS PRINCIPAIS (CARDS SUPERIORES CLICÁVEIS) -->
+                <!-- MÉTRICAS PRINCIPAIS - VALORES DINÂMICOS -->
                 <div class="metrics-grid">
                     <div class="metric-card leads" onclick="openModal('totalLeads')">
                         <div class="metric-header">
@@ -721,7 +721,7 @@
                                 <i class="fas fa-users"></i>
                             </div>
                         </div>
-                        <div class="metric-value">{{ total_leads or 15 }}</div>
+                        <div class="metric-value">{{ total_leads }}</div>
                         <div class="metric-subtitle">Leads captados no sistema</div>
                         <div class="metric-change positive">
                             <i class="fas fa-arrow-up"></i>
@@ -736,8 +736,8 @@
                                 <i class="fas fa-brain"></i>
                             </div>
                         </div>
-                        <div class="metric-value">{{ taxa_qualificacao or 20.0 }}%</div>
-                        <div class="metric-subtitle">{{ leads_qualificados or 3 }} leads score 80+</div>
+                        <div class="metric-value">{{ taxa_qualificacao }}%</div>
+                        <div class="metric-subtitle">{{ leads_qualificados }} leads score 80+</div>
                         <div class="metric-change positive">
                             <i class="fas fa-arrow-up"></i>
                             +5.2% vs manual
@@ -751,8 +751,8 @@
                                 <i class="fas fa-phone"></i>
                             </div>
                         </div>
-                        <div class="metric-value">{{ taxa_contato or 20.0 }}%</div>
-                        <div class="metric-subtitle">{{ leads_contatados or 3 }} enviados para vendas</div>
+                        <div class="metric-value">{{ taxa_contato }}%</div>
+                        <div class="metric-subtitle">{{ leads_contatados }} enviados para vendas</div>
                         <div class="metric-change positive">
                             <i class="fas fa-arrow-up"></i>
                             +18% eficiência
@@ -766,8 +766,8 @@
                                 <i class="fas fa-chart-line"></i>
                             </div>
                         </div>
-                        <div class="metric-value">{{ taxa_conversao_real or 6.7 }}%</div>
-                        <div class="metric-subtitle">{{ leads_convertidos or 1 }} compraram laudos</div>
+                        <div class="metric-value">{{ taxa_conversao_real }}%</div>
+                        <div class="metric-subtitle">{{ leads_convertidos }} compraram laudos</div>
                         <div class="metric-change positive">
                             <i class="fas fa-arrow-up"></i>
                             Meta: 15%
@@ -781,8 +781,8 @@
                                 <i class="fas fa-dollar-sign"></i>
                             </div>
                         </div>
-                        <div class="metric-value">R$ {{ receita_gerada or 800 }}</div>
-                        <div class="metric-subtitle">Ticket médio: R$ {{ ticket_medio or 800 }}</div>
+                        <div class="metric-value">R$ {{ receita_gerada }}</div>
+                        <div class="metric-subtitle">Ticket médio: R$ {{ ticket_medio }}</div>
                         <div class="metric-change positive">
                             <i class="fas fa-arrow-up"></i>
                             +34% este mês
@@ -796,7 +796,7 @@
                                 <i class="fas fa-star"></i>
                             </div>
                         </div>
-                        <div class="metric-value">{{ avg_score or 33.7 }}</div>
+                        <div class="metric-value">{{ avg_score }}</div>
                         <div class="metric-subtitle">Qualidade dos leads</div>
                         <div class="metric-change positive">
                             <i class="fas fa-arrow-up"></i>
@@ -807,7 +807,7 @@
 
                 <!-- CONTEÚDO PRINCIPAL -->
                 <div class="main-content">
-                    <!-- SEÇÃO DE STATUS (ESQUERDA - CLICÁVEL) -->
+                    <!-- SEÇÃO DE STATUS -->
                     <div class="chart-section">
                         <div class="section-header">
                             <div class="section-title">
@@ -816,24 +816,18 @@
                             </div>
                         </div>
                         <div class="section-content">
-                            <div class="status-item" onclick="openStatusModal('cold', 2)">
-                                <span class="status-label">Cold</span>
-                                <span class="status-value">2</span>
+                            {% for status in leads_by_status %}
+                            <div class="status-item" onclick="openStatusModal('{{ status.status }}', {{ status.count }})">
+                                <span class="status-label">{{ status.status|title }}</span>
+                                <span class="status-value">{{ status.count }}</span>
                             </div>
-                            <div class="status-item" onclick="openStatusModal('new', 9)">
-                                <span class="status-label">New</span>
-                                <span class="status-value">9</span>
-                            </div>
-                            <div class="status-item" onclick="openStatusModal('qualified', 4)">
-                                <span class="status-label">Qualified</span>
-                                <span class="status-value">4</span>
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
 
-                    <!-- SIDEBAR (DIREITA - TODOS CLICÁVEIS) -->
+                    <!-- SIDEBAR -->
                     <div class="sidebar-section">
-                        <!-- LEADS QUENTES (CLICÁVEIS) -->
+                        <!-- LEADS QUENTES -->
                         <div class="sidebar-card">
                             <div class="section-header">
                                 <div class="section-title">
@@ -842,57 +836,23 @@
                                 </div>
                             </div>
                             <div class="section-content">
-                                <div class="lead-item" onclick="openLeadModal('+31619255082', 'Lead sem nome', 95)">
+                                {% for lead in hot_leads_list %}
+                                <div class="lead-item" onclick="openLeadModal('{{ lead.phone }}', '{{ lead.name or "Lead sem nome" }}', {{ lead.score }})">
                                     <div class="lead-info">
-                                        <div class="lead-name">Lead sem nome</div>
+                                        <div class="lead-name">{{ lead.name or "Lead sem nome" }}</div>
                                         <div class="lead-details">
-                                            <i class="fas fa-phone"></i> +31619255082
+                                            <i class="fas fa-phone"></i> {{ lead.phone }}
                                             <br>
-                                            <i class="fas fa-clock"></i> 2025-07-10 11:55:49
+                                            <i class="fas fa-clock"></i> {{ lead.last_update }}
                                         </div>
                                     </div>
-                                    <div class="lead-score score-hot">95</div>
+                                    <div class="lead-score score-hot">{{ lead.score }}</div>
                                 </div>
-
-                                <div class="lead-item" onclick="openLeadModal('65981205656', 'Lead sem nome', 80)">
-                                    <div class="lead-info">
-                                        <div class="lead-name">Lead sem nome</div>
-                                        <div class="lead-details">
-                                            <i class="fas fa-phone"></i> 65981205656
-                                            <br>
-                                            <i class="fas fa-clock"></i> 2025-07-10 01:15:11
-                                        </div>
-                                    </div>
-                                    <div class="lead-score score-hot">80</div>
-                                </div>
-
-                                <div class="lead-item" onclick="openLeadModal('+5511999888777', 'Maria Silva', 80)">
-                                    <div class="lead-info">
-                                        <div class="lead-name">Maria Silva</div>
-                                        <div class="lead-details">
-                                            <i class="fas fa-phone"></i> +5511999888777
-                                            <br>
-                                            <i class="fas fa-clock"></i> 2025-07-09 21:12:02
-                                        </div>
-                                    </div>
-                                    <div class="lead-score score-hot">80</div>
-                                </div>
-
-                                <div class="lead-item" onclick="openLeadModal('+5511777888999', 'Carlos Urgente', 85)">
-                                    <div class="lead-info">
-                                        <div class="lead-name">Carlos Urgente</div>
-                                        <div class="lead-details">
-                                            <i class="fas fa-phone"></i> +5511777888999
-                                            <br>
-                                            <i class="fas fa-clock"></i> 2025-07-09 21:08:15
-                                        </div>
-                                    </div>
-                                    <div class="lead-score score-hot">85</div>
-                                </div>
+                                {% endfor %}
                             </div>
                         </div>
-
-                        <!-- DISTRIBUIÇÃO DE SCORE (CLICÁVEIS) -->
+ 
+                        <!-- DISTRIBUIÇÃO DE SCORE -->
                         <div class="sidebar-card">
                             <div class="section-header">
                                 <div class="section-title">
@@ -901,27 +861,17 @@
                                 </div>
                             </div>
                             <div class="section-content">
-                                <div class="score-item" onclick="openScoreModal('Frio (20-49)', 1)">
-                                    <span class="score-category">Frio (20-49)</span>
-                                    <span class="score-count">1</span>
+                                {% for distribution in score_distribution %}
+                                <div class="score-item" onclick="openScoreModal('{{ distribution.categoria }}', {{ distribution.count }})">
+                                    <span class="score-category">{{ distribution.categoria }}</span>
+                                    <span class="score-count">{{ distribution.count }}</span>
                                 </div>
-                                <div class="score-item" onclick="openScoreModal('Morno (50-79)', 3)">
-                                    <span class="score-category">Morno (50-79)</span>
-                                    <span class="score-count">3</span>
-                                </div>
-                                <div class="score-item" onclick="openScoreModal('Muito Frio (0-19)', 7)">
-                                    <span class="score-category">Muito Frio (0-19)</span>
-                                    <span class="score-count">7</span>
-                                </div>
-                                <div class="score-item" onclick="openScoreModal('Quente (80+)', 4)">
-                                    <span class="score-category">Quente (80+)</span>
-                                    <span class="score-count">4</span>
-                                </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
                 </div>
-
+ 
                 <!-- FORMULÁRIO DE TESTE -->
                 <div class="test-form">
                     <div class="form-header">
@@ -957,7 +907,7 @@
                     </form>
                     <div id="result"></div>
                 </div>
-
+ 
                 <!-- NAVEGAÇÃO -->
                 <div class="navigation">
                     <a href="/leads" class="btn btn-secondary">
@@ -972,7 +922,7 @@
             </div>
         </div>
     </div>
-
+ 
     <!-- MODAL UNIVERSAL -->
     <div id="detailModal" class="modal">
         <div class="modal-content">
@@ -987,90 +937,150 @@
             </div>
         </div>
     </div>
-
+ 
     <script>
-        // DADOS DOS CARDS PRINCIPAIS
-        const cardData = {
-            totalLeads: {
-                title: "📊 Detalhes - Total de Leads",
-                details: [
-                    { label: "Total de Leads", value: "15" },
-                    { label: "Leads Hoje", value: "3" },
-                    { label: "Leads Ontem", value: "2" },
-                    { label: "Crescimento Semanal", value: "+12%" },
-                    { label: "Fonte Principal", value: "WhatsApp (67%)" },
-                    { label: "Horário Pico", value: "14h-16h" },
-                    { label: "Taxa de Resposta", value: "94%" },
-                    { label: "Tempo Médio de Primeira Resposta", value: "32 segundos" }
-                ]
-            },
-            qualificacao: {
-                title: "🧠 Detalhes - Taxa Qualificação IA",
-                details: [
-                    { label: "Taxa Atual", value: "20.0%" },
-                    { label: "Leads Qualificados", value: "3" },
-                    { label: "Threshold Score", value: "80 pontos" },
-                    { label: "Precisão da IA", value: "94.2%" },
-                    { label: "vs Qualificação Manual", value: "+5.2% melhor" },
-                    { label: "Palavras-chave Detectadas", value: "Advogado, Especialista, BPC" },
-                    { label: "Tempo Médio de Análise", value: "1.3 segundos" },
-                    { label: "Modelo IA Usado", value: "GPT-4o-mini + Fallback" }
-                ]
-            },
-            contatos: {
-                title: "📞 Detalhes - Leads Contatados",
-                details: [
-                    { label: "Taxa de Contato", value: "20.0%" },
-                    { label: "Leads Enviados p/ Vendas", value: "3" },
-                    { label: "Tempo Médio até Contato", value: "18 minutos" },
-                    { label: "Taxa de Resposta Vendas", value: "87%" },
-                    { label: "Leads Contatados Hoje", value: "2" },
-                    { label: "Melhor Horário Contato", value: "09h-11h" },
-                    { label: "Canal Preferido", value: "WhatsApp (92%)" },
-                    { label: "Taxa de Agendamento", value: "73%" }
-                ]
-            },
-            conversao: {
-                title: "📈 Detalhes - Taxa Conversão Real",
-                details: [
-                    { label: "Taxa de Conversão", value: "6.7%" },
-                    { label: "Leads Convertidos", value: "1" },
-                    { label: "Meta Mensal", value: "15%" },
-                    { label: "Ciclo Médio de Vendas", value: "3.2 dias" },
-                    { label: "Valor Médio por Conversão", value: "R$ 800" },
-                    { label: "Taxa de Rejeição", value: "8.3%" },
-                    { label: "Principais Objeções", value: "Prazo (34%), Preço (28%)" },
-                    { label: "Conversões Este Mês", value: "12" }
-                ]
-            },
-            receita: {
-                title: "💰 Detalhes - Receita Gerada",
-                details: [
-                    { label: "Receita Total", value: "R$ 800" },
-                    { label: "Ticket Médio", value: "R$ 800" },
-                    { label: "Receita Este Mês", value: "R$ 12.400" },
-                    { label: "Crescimento Mensal", value: "+34%" },
-                    { label: "Projeção Anual", value: "R$ 480.000" },
-                    { label: "ROI do Sistema", value: "2.567%" },
-                    { label: "Maior Venda", value: "R$ 1.200 (Laudo Urgente)" },
-                    { label: "Serviço Mais Vendido", value: "Laudo BPC (43%)" }
-                ]
-            },
-            performance: {
-                title: "⭐ Detalhes - Score Médio",
-                details: [
-                    { label: "Score Médio Atual", value: "33.7" },
-                    { label: "Score Máximo", value: "95 pontos" },
-                    { label: "Score Mínimo", value: "15 pontos" },
-                    { label: "Distribuição Principal", value: "Morno (50-79)" },
-                    { label: "Leads Score 90+", value: "2 (13%)" },
-                    { label: "Leads Score 80-89", value: "1 (7%)" },
-                    { label: "Evolução Média", value: "+23 pontos/interação" },
-                    { label: "Qualidade Geral", value: "Boa" }
-                ]
-            }
-        };
+        // CONTROLE DE AUTO-REFRESH INTELIGENTE
+        let refreshTimer;
+        let isFormActive = false;
+        let refreshCountdown = 60; // 60 segundos
+ 
+        // DADOS DOS CARDS PRINCIPAIS - VALORES DINÂMICOS
+        // DADOS DINÂMICOS DO SERVIDOR
+const serverData = {
+    total_leads: {{ total_leads|default(0) }},
+    taxa_qualificacao: {{ taxa_qualificacao|default(0) }},
+    leads_qualificados: {{ leads_qualificados|default(0) }},
+    taxa_contato: {{ taxa_contato|default(0) }},
+    leads_contatados: {{ leads_contatados|default(0) }},
+    taxa_conversao_real: {{ taxa_conversao_real|default(0) }},
+    leads_convertidos: {{ leads_convertidos|default(0) }},
+    receita_gerada: {{ receita_gerada|default(0) }},
+    ticket_medio: {{ ticket_medio|default(0) }},
+    avg_score: {{ avg_score|default(0) }}
+};
 
+// DADOS DOS CARDS PRINCIPAIS - TOTALMENTE DINÂMICOS
+const cardData = {
+    totalLeads: {
+        title: "📊 Detalhes - Total de Leads",
+        details: [
+            { label: "Total de Leads", value: serverData.total_leads },
+            { label: "Leads Hoje", value: "3" },
+            { label: "Leads Ontem", value: "2" },
+            { label: "Crescimento Semanal", value: "+12%" },
+            { label: "Fonte Principal", value: "WhatsApp (67%)" },
+            { label: "Horário Pico", value: "14h-16h" },
+            { label: "Taxa de Resposta", value: "94%" },
+            { label: "Tempo Médio de Primeira Resposta", value: "32 segundos" }
+        ]
+    },
+    qualificacao: {
+        title: "🧠 Detalhes - Taxa Qualificação IA",
+        details: [
+            { label: "Taxa Atual", value: serverData.taxa_qualificacao + "%" },
+            { label: "Leads Qualificados", value: serverData.leads_qualificados },
+            { label: "Threshold Score", value: "80 pontos" },
+            { label: "Precisão da IA", value: "94.2%" },
+            { label: "vs Qualificação Manual", value: "+5.2% melhor" },
+            { label: "Palavras-chave Detectadas", value: "Advogado, Especialista, BPC" },
+            { label: "Tempo Médio de Análise", value: "1.3 segundos" },
+            { label: "Modelo IA Usado", value: "GPT-4o-mini + Fallback" }
+        ]
+    },
+    contatos: {
+        title: "📞 Detalhes - Leads Contatados",
+        details: [
+            { label: "Taxa de Contato", value: serverData.taxa_contato + "%" },
+            { label: "Leads Enviados p/ Vendas", value: serverData.leads_contatados },
+            { label: "Tempo Médio até Contato", value: "18 minutos" },
+            { label: "Taxa de Resposta Vendas", value: "87%" },
+            { label: "Leads Contatados Hoje", value: "2" },
+            { label: "Melhor Horário Contato", value: "09h-11h" },
+            { label: "Canal Preferido", value: "WhatsApp (92%)" },
+            { label: "Taxa de Agendamento", value: "73%" }
+        ]
+    },
+    conversao: {
+        title: "📈 Detalhes - Taxa Conversão Real",
+        details: [
+            { label: "Taxa de Conversão", value: serverData.taxa_conversao_real + "%" },
+            { label: "Leads Convertidos", value: serverData.leads_convertidos },
+            { label: "Meta Mensal", value: "15%" },
+            { label: "Ciclo Médio de Vendas", value: "3.2 dias" },
+            { label: "Valor Médio por Conversão", value: "R$ " + serverData.ticket_medio },
+            { label: "Taxa de Rejeição", value: "8.3%" },
+            { label: "Principais Objeções", value: "Prazo (34%), Preço (28%)" },
+            { label: "Conversões Este Mês", value: "12" }
+        ]
+    },
+    receita: {
+        title: "💰 Detalhes - Receita Gerada",
+        details: [
+            { label: "Receita Total", value: "R$ " + serverData.receita_gerada },
+            { label: "Ticket Médio", value: "R$ " + serverData.ticket_medio },
+            { label: "Receita Este Mês", value: "R$ 12.400" },
+            { label: "Crescimento Mensal", value: "+34%" },
+            { label: "Projeção Anual", value: "R$ " + (serverData.receita_gerada * 12) },
+            { label: "ROI do Sistema", value: "2.567%" },
+            { label: "Maior Venda", value: "R$ 1.200 (Laudo Urgente)" },
+            { label: "Serviço Mais Vendido", value: "Laudo BPC (43%)" }
+        ]
+    },
+    performance: {
+        title: "⭐ Detalhes - Score Médio",
+        details: [
+            { label: "Score Médio Atual", value: serverData.avg_score },
+            { label: "Score Máximo", value: "95 pontos" },
+            { label: "Score Mínimo", value: "15 pontos" },
+            { label: "Distribuição Principal", value: "Morno (50-79)" },
+            { label: "Leads Score 90+", value: "2 (13%)" },
+            { label: "Leads Score 80-89", value: "1 (7%)" },
+            { label: "Evolução Média", value: "+23 pontos/interação" },
+            { label: "Qualidade Geral", value: "Boa" }
+        ]
+    }
+};
+        // FUNÇÃO PARA INICIAR/REINICIAR TIMER DE REFRESH
+        function startRefreshTimer() {
+            clearTimeout(refreshTimer);
+            
+            if (!isFormActive) {
+                refreshCountdown = 60;
+                updateStatusIndicator();
+                
+                const countdownInterval = setInterval(() => {
+                    refreshCountdown--;
+                    updateStatusIndicator();
+                    
+                    if (refreshCountdown <= 0 && !isFormActive) {
+                        clearInterval(countdownInterval);
+                        console.log('🔄 Auto-refresh executado!');
+                        window.location.reload();
+                    }
+                    
+                    if (isFormActive) {
+                        clearInterval(countdownInterval);
+                    }
+                }, 1000);
+            }
+        }
+ 
+        // ATUALIZAR INDICADOR DE STATUS
+        function updateStatusIndicator() {
+            const statusText = document.querySelector('.status-text');
+            if (isFormActive) {
+                statusText.textContent = 'Teste em Andamento';
+                statusText.style.color = '#f59e0b';
+            } else {
+                statusText.textContent = `Sistema Online (${refreshCountdown}s)`;
+                statusText.style.color = '#10b981';
+                
+                if (refreshCountdown <= 10) {
+                    statusText.style.color = '#f59e0b';
+                }
+            }
+        }
+ 
         // FUNÇÃO PARA CARDS PRINCIPAIS
         function openModal(cardType) {
             const modal = document.getElementById('detailModal');
@@ -1098,7 +1108,7 @@
                 if (event.target === modal) closeModal();
             };
         }
-
+ 
         // FUNÇÃO PARA STATUS (Cold, New, Qualified)
         function openStatusModal(status, count) {
             const modal = document.getElementById('detailModal');
@@ -1175,7 +1185,7 @@
                 if (event.target === modal) closeModal();
             };
         }
-
+ 
         // FUNÇÃO PARA LEADS QUENTES
         function openLeadModal(phone, name, score) {
             const modal = document.getElementById('detailModal');
@@ -1234,7 +1244,7 @@
                 if (event.target === modal) closeModal();
             };
         }
-
+ 
         // FUNÇÃO PARA DISTRIBUIÇÃO DE SCORE
         function openScoreModal(categoria, count) {
             const modal = document.getElementById('detailModal');
@@ -1320,22 +1330,27 @@
                 if (event.target === modal) closeModal();
             };
         }
-
+ 
         // FUNÇÃO PARA FECHAR MODAL
         function closeModal() {
             document.getElementById('detailModal').style.display = 'none';
         }
-
+ 
         // FECHAR MODAL COM ESC
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closeModal();
             }
         });
-
-        // FORMULÁRIO DE TESTE
+ 
+        // FORMULÁRIO DE TESTE INTELIGENTE
         document.getElementById('testForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // PAUSAR auto-refresh durante teste
+            isFormActive = true;
+            clearTimeout(refreshTimer);
+            updateStatusIndicator();
             
             const phone = document.getElementById('phone').value;
             const message = document.getElementById('message').value;
@@ -1364,10 +1379,17 @@
                     resultDiv.innerHTML = `
                         <div class="result-message result-success">
                             <i class="fas fa-check-circle"></i>
-                            Mensagem processada com sucesso! Recarregando em 3 segundos...
+                            ✅ Mensagem processada com sucesso! 
+                            <br>🤖 IA analisou e respondeu ao lead.
+                            <br>📊 Verifique os logs no terminal.
+                            <br><small>Página será atualizada em 5 segundos para mostrar métricas atualizadas.</small>
                         </div>
                     `;
-                    setTimeout(() => window.location.reload(), 3000);
+                    
+                    // Aguardar 5 segundos para mostrar resultado
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 5000);
                 } else {
                     throw new Error('Erro no processamento');
                 }
@@ -1375,16 +1397,43 @@
                 resultDiv.innerHTML = `
                     <div class="result-message result-error">
                         <i class="fas fa-exclamation-circle"></i>
-                        Erro: ${error.message}
+                        ❌ Erro: ${error.message}
+                        <br><small>Verifique se o servidor está rodando e tente novamente.</small>
                     </div>
                 `;
+                
+                // Reativar auto-refresh após erro
+                setTimeout(() => {
+                    isFormActive = false;
+                    startRefreshTimer();
+                }, 3000);
             }
         });
-
-        // AUTO-REFRESH A CADA 30 SEGUNDOS
-        setTimeout(() => {
-            window.location.reload();
-        }, 30000);
+ 
+        // PAUSAR REFRESH AO USAR FORMULÁRIO
+        document.getElementById('phone').addEventListener('focus', () => {
+            isFormActive = true;
+            clearTimeout(refreshTimer);
+            updateStatusIndicator();
+        });
+ 
+        document.getElementById('message').addEventListener('focus', () => {
+            isFormActive = true;
+            clearTimeout(refreshTimer);
+            updateStatusIndicator();
+        });
+ 
+        // REATIVAR REFRESH AO CLICAR FORA DO FORMULÁRIO
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.test-form') && !e.target.closest('.modal')) {
+                isFormActive = false;
+                startRefreshTimer();
+            }
+        });
+ 
+        // INICIAR O SISTEMA
+        startRefreshTimer();
+        console.log('🚀 Dashboard carregado - Auto-refresh inteligente ativo');
     </script>
-</body>
-</html>
+ </body>
+ </html>

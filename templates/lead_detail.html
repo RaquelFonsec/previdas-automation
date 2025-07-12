@@ -1,106 +1,204 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Detalhes do Lead - Previdas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            background: #f4f6f8;
             min-height: 100vh;
-            padding: 20px;
+            padding: 30px 20px;
+            color: #1f2937;
         }
-        
+
         .container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 30px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 35px 40px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
         }
-        
-        .header { 
-            text-align: center; 
-            margin-bottom: 30px; 
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
         }
-        
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #111827;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 10px 22px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            margin: 0 8px 15px 8px;
+            transition: background-color 0.2s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
         .lead-profile {
-            background: #f8fafc;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
+            background: #f9fafb;
+            padding: 25px 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            line-height: 1.5;
         }
-        
-        .conversation-section {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
+
+        .lead-profile h2 {
+            font-weight: 700;
+            font-size: 28px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            color: #111827;
         }
-        
+
+        .lead-profile p {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #374151;
+        }
+
+        .score-badge {
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        .score-high {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .score-medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .score-low {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .conversation-section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+
+        .conversation-section h3 {
+            font-weight: 700;
+            font-size: 22px;
+            margin-bottom: 25px;
+            color: #111827;
+        }
+
         .message {
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 10px;
-            max-width: 80%;
+            max-width: 75%;
+            padding: 15px 20px;
+            margin-bottom: 18px;
+            border-radius: 14px;
+            line-height: 1.4;
+            font-size: 15px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            position: relative;
         }
-        
+
         .message-bot {
             background: #e5e7eb;
             margin-left: auto;
             text-align: right;
+            border-bottom-right-radius: 2px;
         }
-        
+
         .message-client {
             background: #dbeafe;
             margin-right: auto;
+            border-bottom-left-radius: 2px;
         }
-        
+
+        .message strong {
+            display: block;
+            margin-bottom: 6px;
+            color: #374151;
+        }
+
         .message-time {
             font-size: 12px;
             color: #6b7280;
             margin-top: 5px;
         }
-        
-        .btn {
-            background: #667eea;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            display: inline-block;
-            margin-right: 10px;
-        }
-        
-        .btn:hover {
-            background: #5a67d8;
-        }
-        
-        .score-badge {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        
-        .score-high { background: #fee2e2; color: #991b1b; }
-        .score-medium { background: #fef3c7; color: #92400e; }
-        .score-low { background: #d1fae5; color: #065f46; }
-        
+
         .automation-log {
             background: #f9fafb;
-            padding: 10px;
-            border-left: 4px solid #3b82f6;
-            margin: 5px 0;
+            padding: 14px 18px;
+            border-left: 5px solid #3b82f6;
+            margin-bottom: 14px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            font-size: 15px;
+            color: #374151;
         }
-        
+
         .automation-time {
             font-size: 12px;
             color: #6b7280;
+            margin-top: 6px;
+        }
+
+        .automation-log strong {
+            font-weight: 700;
+            margin-right: 6px;
+        }
+
+        .automation-result-success {
+            color: #059669;
+            font-weight: 700;
+        }
+
+        .automation-result-fail {
+            color: #dc2626;
+            font-weight: 700;
+        }
+
+        /* Form botao excluir alinhado */
+        form {
+            margin-top: 25px;
         }
     </style>
 </head>
@@ -124,6 +222,11 @@
             <p><strong>🏷️ Status:</strong> {{ lead.status }}</p>
             <p><strong>📱 Fonte:</strong> {{ lead.source }}</p>
             <p><strong>📅 Criado:</strong> {{ lead.created_at }}</p>
+
+            <!-- Botão de Excluir Lead -->
+            <form action="/leads/{{ lead.id }}/delete" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este lead?');">
+                <button type="submit" class="btn btn-danger">🗑️ Excluir Lead</button>
+            </form>
         </div>
 
         <!-- HISTÓRICO DE CONVERSAS -->
@@ -133,10 +236,8 @@
             {% if conversations %}
                 {% for conv in conversations %}
                 <div class="message {% if conv.is_bot %}message-bot{% else %}message-client{% endif %}">
-                    <div>
-                        <strong>{% if conv.is_bot %}🤖 Bot{% else %}👤 Cliente{% endif %}:</strong>
-                        {{ conv.message }}
-                    </div>
+                    <strong>{% if conv.is_bot %}🤖 Bot{% else %}👤 Cliente{% endif %}:</strong>
+                    {{ conv.message }}
                     <div class="message-time">{{ conv.timestamp }}</div>
                 </div>
                 {% endfor %}
@@ -155,7 +256,7 @@
                 {% for log in automation_logs %}
                 <div class="automation-log">
                     <strong>{{ log.trigger_type }}</strong> - {{ log.action_taken }}
-                    <span style="color: {% if log.result == 'success' %}#059669{% else %}#dc2626{% endif %};">
+                    <span class="automation-result-{% if log.result == 'success' %}success{% else %}fail{% endif %}">
                         ({{ log.result }})
                     </span>
                     <div class="automation-time">{{ log.timestamp }}</div>

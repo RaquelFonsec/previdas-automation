@@ -1,97 +1,165 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Gestão de Leads - Previdas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
         }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
             padding: 30px;
         }
-        
-        .header { 
-            text-align: center; 
-            margin-bottom: 30px; 
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: #fff;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
         }
-        
-        .leads-table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin-top: 20px; 
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
         }
-        
-        .leads-table th, .leads-table td { 
-            padding: 12px; 
-            text-align: left; 
-            border-bottom: 1px solid #ddd; 
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #111827;
         }
-        
-        .leads-table th { 
-            background: #f8fafc; 
-            font-weight: 600; 
+
+        .btn {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 10px 18px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 10px;
         }
-        
-        /* TORNAR LINHAS CLICÁVEIS */
-        .leads-table tr {
-            transition: all 0.2s ease;
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .leads-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        .leads-table th, .leads-table td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .leads-table th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .leads-table tbody tr {
+            transition: background 0.2s ease;
             cursor: pointer;
         }
-        
-        .leads-table tbody tr:hover { 
-            background: #f0f9ff; 
-            transform: scale(1.01);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+        .leads-table tbody tr:hover {
+            background: #f1f5f9;
         }
-        
+
         .status-badge {
-            padding: 4px 8px;
+            padding: 6px 10px;
             border-radius: 4px;
             font-size: 12px;
-            font-weight: bold;
+            font-weight: 600;
+            text-transform: capitalize;
+            display: inline-block;
         }
-        
-        .status-cold { background: #e5e7eb; color: #374151; }
-        .status-new { background: #dbeafe; color: #1e40af; }
-        .status-qualified { background: #d1fae5; color: #065f46; }
-        
-        .btn {
-            background: #667eea;
-            color: white;
-            padding: 8px 16px;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 12px;
-            margin-right: 10px;
+
+        .status-new {
+            background: #e0f2fe;
+            color: #0369a1;
         }
-        
-        .btn:hover {
-            background: #5a67d8;
+
+        .status-qualified {
+            background: #dcfce7;
+            color: #15803d;
         }
-        
-        .score-high { color: #dc2626; font-weight: bold; }
-        .score-medium { color: #d97706; font-weight: bold; }
-        .score-low { color: #059669; font-weight: bold; }
-        
+
+        .status-cold {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .score-high {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .score-medium {
+            color: #d97706;
+            font-weight: 600;
+        }
+
+        .score-low {
+            color: #059669;
+            font-weight: 600;
+        }
+
         .phone-link {
             color: #2563eb;
             text-decoration: none;
         }
-        
+
         .phone-link:hover {
             text-decoration: underline;
+        }
+
+        .lead-count {
+            margin-top: 10px;
+            font-weight: 500;
+            color: #4b5563;
+        }
+
+        @media (max-width: 768px) {
+            .leads-table thead {
+                display: none;
+            }
+
+            .leads-table tr {
+                display: block;
+                margin-bottom: 15px;
+                background: #f9fafb;
+                padding: 15px;
+                border-radius: 8px;
+            }
+
+            .leads-table td {
+                display: flex;
+                justify-content: space-between;
+                padding: 8px 0;
+                border: none;
+            }
+
+            .leads-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: #6b7280;
+            }
         }
     </style>
 </head>
@@ -100,10 +168,7 @@
         <div class="header">
             <h1>👥 Gestão de Leads</h1>
             <a href="/" class="btn">← Voltar ao Dashboard</a>
-        </div>
-
-        <div style="margin-bottom: 20px;">
-            <strong>{{ leads|length }}</strong> leads encontrados
+            <p class="lead-count"><strong>{{ leads|length }}</strong> leads encontrados</p>
         </div>
 
         <table class="leads-table">
@@ -121,28 +186,24 @@
             <tbody>
                 {% for lead in leads %}
                 <tr onclick="window.location.href='/lead/{{ lead.phone }}'">
-                    <td>{{ lead.name or 'Lead sem nome' }}</td>
-                    <td>
-                        <a href="/lead/{{ lead.phone }}" class="phone-link">
+                    <td data-label="Nome">{{ lead.name or 'Lead sem nome' }}</td>
+                    <td data-label="Telefone">
+                        <a href="/lead/{{ lead.phone }}" class="phone-link" onclick="event.stopPropagation()">
                             {{ lead.phone }}
                         </a>
                     </td>
-                    <td>
-                        <span class="status-badge status-{{ lead.status }}">
-                            {{ lead.status }}
-                        </span>
+                    <td data-label="Status">
+                        <span class="status-badge status-{{ lead.status }}">{{ lead.status }}</span>
                     </td>
-                    <td>
+                    <td data-label="Score">
                         <span class="{% if lead.score >= 80 %}score-high{% elif lead.score >= 50 %}score-medium{% else %}score-low{% endif %}">
                             {{ lead.score }}
                         </span>/100
                     </td>
-                    <td>{{ lead.source }}</td>
-                    <td>{{ lead.created_at }}</td>
-                    <td>
-                        <a href="/lead/{{ lead.phone }}" class="btn" onclick="event.stopPropagation()">
-                            Ver Conversa
-                        </a>
+                    <td data-label="Fonte">{{ lead.source }}</td>
+                    <td data-label="Criado">{{ lead.created_at }}</td>
+                    <td data-label="Ações">
+                        <a href="/lead/{{ lead.phone }}" class="btn" onclick="event.stopPropagation()">Ver Conversa</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -150,7 +211,7 @@
         </table>
 
         {% if not leads %}
-        <div style="text-align: center; padding: 40px; color: #6b7280;">
+        <div style="text-align: center; padding: 50px; color: #6b7280;">
             <h3>Nenhum lead encontrado</h3>
             <p>Use o formulário de teste no dashboard para criar leads.</p>
         </div>
